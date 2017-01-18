@@ -10,5 +10,5 @@ public interface Action {
     /**
      * A general action that returns a success flag and a key-value response for a client.
      */
-    ActionResult execute();
+    ActionResult execute(ActionContext context);
 }

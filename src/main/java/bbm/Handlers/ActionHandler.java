@@ -1,5 +1,6 @@
 package bbm.Handlers;
 
+import bbm.actions.ActionContext;
 import bbm.actions.ActionResolver;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
@@ -58,7 +59,12 @@ public class ActionHandler implements Handler {
         })
         .onError(throwable -> ctx.error(throwable))
         .onNull(() -> ctx.clientError(400))
-        .map(branchName -> resolver.resolveAction(action, branchName).execute())
+        .map(branchName -> resolver.resolveAction(action).execute(new ActionContext() {
+            @Override
+            public String getBranchName() {
+                return branchName;
+            }
+        }))
         .then(actionResult -> ctx.render(actionResult));
     }
 }

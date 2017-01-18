@@ -6,5 +6,5 @@ package bbm.actions;
 public interface ActionResolver {
     public enum ActionType {MONITOR, UNMONITOR, RETURN_CREDENTIALS}
 
-    Action resolveAction(ActionType type, String branchName);
+    Action resolveAction(ActionType type);
 }
