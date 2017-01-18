@@ -1,4 +1,4 @@
-package database;
+package bbm.database;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
