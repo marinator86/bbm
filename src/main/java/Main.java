@@ -32,6 +32,10 @@ public class Main {
               ctx.render("Hello db!");
             })
 
+            .post("hooks", ctx -> {
+                ctx.render("OK");
+            })
+
             .files(f -> f.dir("public"))
         )
     );
