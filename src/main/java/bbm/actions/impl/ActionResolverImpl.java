@@ -12,7 +12,7 @@ public class ActionResolverImpl implements ActionResolver{
     @Override
     public Action resolveAction(ActionType type, String branchName) {
         switch (type){
-            case MONTIOR:
+            case MONITOR:
                 return new MonitorAction(branchName);
             case UNMONITOR:
                 return new UnmonitorAction(branchName);
