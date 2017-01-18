@@ -12,8 +12,6 @@ import ratpack.server.RatpackServer;
 import ratpack.groovy.template.TextTemplateModule;
 import ratpack.guice.Guice;
 
-import java.rmi.registry.Registry;
-
 import static ratpack.groovy.Groovy.groovyTemplate;
 
 public class Main {
