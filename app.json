@@ -1,6 +1,6 @@
 {
-  "name": "Getting Started with Gradle on Heroku",
-  "description": "A bare-bones Gradle app, which can easily be deployed to Heroku.",
+  "name": "Bitbucket Branch Manager",
+  "description": "A small management app to configure some salesforce sandboxes and manch bitbucket PRs",
   "image": "heroku/gradle",
-  "addons": [ "heroku-postgresql" ]
+  "addons": [ "papertrail", "mongolab" ]
 }
