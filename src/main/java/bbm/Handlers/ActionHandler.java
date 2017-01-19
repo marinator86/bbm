@@ -1,7 +1,6 @@
 package bbm.Handlers;
 
-import bbm.actions.ActionContext;
-import bbm.actions.ActionResolver;
+import bbm.actions.*;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -25,21 +24,15 @@ public class ActionHandler implements Handler {
 
     private final static Logger logger = LoggerFactory.getLogger(ActionHandler.class);
 
-    private final static Map<String, ActionResolver.ActionType> actionMap = ImmutableMap.of(
-            "pullrequest:created", ActionResolver.ActionType.MONITOR,
-            "pullrequest:fulfilled", ActionResolver.ActionType.UNMONITOR,
-            "pullrequest:rejected", ActionResolver.ActionType.UNMONITOR
+    private final static Map<String, Class> actionMap = ImmutableMap.of(
+            "pullrequest:created", MonitorAction.class,
+            "pullrequest:fulfilled", UnmonitorAction.class,
+            "pullrequest:rejected", UnmonitorAction.class
     );
-
-    private final ActionResolver resolver;
-
-    @Inject
-    public ActionHandler(ActionResolver resolver){
-        this.resolver = resolver;
-    }
 
     @Override
     public void handle(Context ctx) throws Exception {
+
         final Headers headers = ctx.getRequest().getHeaders();
         final Boolean eventKeyHeaderNotSet = !headers.contains(HEADER_EVENT_KEY);
         final Boolean eventKeyNotImplemented = !actionMap.containsKey(headers.get(HEADER_EVENT_KEY));
@@ -47,7 +40,7 @@ public class ActionHandler implements Handler {
 
         if(eventKeyHeaderNotSet || eventKeyNotImplemented || wrongHookUUIdFromBitbucket) ctx.clientError(400);
 
-        ActionResolver.ActionType action = actionMap.get(headers.get(HEADER_EVENT_KEY));
+        Class<Action> action = actionMap.get(headers.get(HEADER_EVENT_KEY));
         ctx.getRequest().getBody().map(typedData -> {
             final JsonParser parser = new JsonParser();
             return parser.parse(typedData.getText())
@@ -59,12 +52,7 @@ public class ActionHandler implements Handler {
         })
         .onError(throwable -> ctx.error(throwable))
         .onNull(() -> ctx.clientError(400))
-        .map(branchName -> resolver.resolveAction(action).execute(new ActionContext() {
-            @Override
-            public String getBranchName() {
-                return branchName;
-            }
-        }))
+        .map(branchName -> ctx.get(action).execute(() -> branchName))
         .then(actionResult -> ctx.render(actionResult));
     }
 }

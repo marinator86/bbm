@@ -29,9 +29,9 @@ public class Main {
             .registry(Guice.registry(b -> {
                 b.module(TextTemplateModule.class, conf -> conf.setStaticallyCompile(true));
                 b.module(DatabaseModule.class);
-                b.module(ActionModule.class);
                 b.module(OrgModule.class);
                 b.module(BranchModule.class);
+                b.module(ActionModule.class);
                 b.bind(AuthHandler.class);
                 b.bind(ActionHandler.class);
                 b.bind(ActionRenderer.class);

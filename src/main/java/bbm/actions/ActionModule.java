@@ -1,6 +1,7 @@
 package bbm.actions;
 
-import bbm.actions.impl.ActionResolverImpl;
+import bbm.actions.impl.*;
+import bbm.actions.impl.UnmonitorActionImpl;
 import com.google.inject.AbstractModule;
 
 /**
@@ -9,6 +10,8 @@ import com.google.inject.AbstractModule;
 public class ActionModule extends AbstractModule{
     @Override
     protected void configure() {
-        bind(ActionResolver.class).to(ActionResolverImpl.class);
+        bind(MonitorAction.class).to(MonitorActionImpl.class);
+        bind(ReceiveCredentialsAction.class).to(ReceiveCredentialsActionImpl.class);
+        bind(UnmonitorAction.class).to(UnmonitorActionImpl.class);
     }
 }
