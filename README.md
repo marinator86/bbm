@@ -1,16 +1,18 @@
-# gradle-getting-started
+# B* Branch Manager
 
-A barebones Gradle app, which can easily be deployed to Heroku.
+An app to monitor branches that are in pull requests / by using webhooks.
+Through a connection with a salesforce org, information about sandboxes can get obtained.
+A sandbox then gets assigned to a branch. Information of a branch's sandbox can be obtained and used in CI.
 
-This application support the [Getting Started with Gradle on Heroku](https://devcenter.heroku.com/articles/getting-started-with-gradle-on-heroku) article - check it out.
+WIP!
 
 ## Running Locally
 
 Make sure you have Java installed.  Also, install the [Heroku Toolbelt](https://toolbelt.heroku.com/).
 
 ```sh
-$ git clone https://github.com/heroku/gradle-getting-started.git
-$ cd gradle-getting-started
+$ git clone https://github.com/marinator86/bbm
+$ cd bbm
 $ ./gradlew stage
 $ heroku local web
 ```
