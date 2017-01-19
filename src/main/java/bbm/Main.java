@@ -3,8 +3,11 @@ package bbm;
 import bbm.Handlers.ActionHandler;
 import bbm.Handlers.ActionRenderer;
 import bbm.Handlers.AuthHandler;
+import bbm.Handlers.OptionalOrgRenderer;
 import bbm.actions.ActionModule;
 import bbm.database.DatabaseModule;
+import bbm.database.orgs.OrgModule;
+import bbm.database.branches.BranchModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.server.BaseDir;
@@ -27,9 +30,12 @@ public class Main {
                 b.module(TextTemplateModule.class, conf -> conf.setStaticallyCompile(true));
                 b.module(DatabaseModule.class);
                 b.module(ActionModule.class);
+                b.module(OrgModule.class);
+                b.module(BranchModule.class);
                 b.bind(AuthHandler.class);
                 b.bind(ActionHandler.class);
                 b.bind(ActionRenderer.class);
+                b.bind(OptionalOrgRenderer.class);
             }))
 
 
