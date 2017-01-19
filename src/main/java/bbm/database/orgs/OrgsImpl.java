@@ -30,6 +30,12 @@ class OrgsImpl implements Orgs{
     }
 
     @Override
+    public Optional<Org> getUsedOrg(Branch branch) {
+        Org org = datastore.find(Org.class).field("currentBranch").equal(branch).get();
+        return org == null ? Optional.empty() : Optional.of(org);
+    }
+
+    @Override
     public Optional<Org> getOrg(String name) {
         Org org = datastore.find(Org.class).field("name").equal(name).get();
         return org == null ? Optional.empty() : Optional.of(org);

@@ -17,6 +17,10 @@ class BranchesImpl implements Branches{
         this.datastore = datastore;
     }
 
+    /**
+     * Creates a managed branch or updates an existing branch to be managed.
+     * @param name the branch Name
+     */
     @Override
     public void createManagedBranch(String name) {
         Optional<Branch> branchOptional = getBranch(name);

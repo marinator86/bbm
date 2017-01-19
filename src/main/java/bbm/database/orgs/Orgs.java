@@ -9,6 +9,7 @@ import java.util.Optional;
  */
 public interface Orgs {
     Optional<Org> getFreeOrg();
+    Optional<Org> getUsedOrg(Branch branch);
     Optional<Org> getOrg(String name);
     void createOrg(String name);
     void setBranch(Org org, Branch branch);
