@@ -35,12 +35,16 @@ public class ReceiveCredentialsActionImpl implements ReceiveCredentialsAction {
             return getActionResult(false, branchName, null);
 
         final Optional<Org> usedOrg = orgs.getUsedOrg(branch.get());
-        if(usedOrg.isPresent())
+        if(usedOrg.isPresent()) {
+            orgs.setBranch(usedOrg.get(), branch.get());
             return getActionResult(true, branchName, usedOrg.get().getName());
+        }
 
         final Optional<Org> freeOrg = orgs.getFreeOrg();
-        if(freeOrg.isPresent())
+        if(freeOrg.isPresent()) {
+            orgs.setBranch(freeOrg.get(), branch.get());
             return getActionResult(true, branchName, freeOrg.get().getName());
+        }
 
         return getActionResult(false, branchName, null);
     }
