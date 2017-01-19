@@ -1,4 +1,4 @@
-package bbm.Handlers;
+package bbm.handlers;
 
 import bbm.actions.ActionResult;
 import com.google.gson.Gson;

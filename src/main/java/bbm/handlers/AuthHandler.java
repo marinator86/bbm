@@ -1,4 +1,4 @@
-package bbm.Handlers;
+package bbm.handlers;
 
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
@@ -9,6 +9,6 @@ import ratpack.handling.Handler;
 public class AuthHandler implements Handler {
     @Override
     public void handle(Context ctx) throws Exception {
-
+        // TODO implement authentication
     }
 }

@@ -1,17 +1,14 @@
-package bbm.Handlers;
+package bbm.handlers;
 
 import bbm.actions.*;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
 import ratpack.http.Headers;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -38,7 +35,10 @@ public class ActionHandler implements Handler {
         final Boolean eventKeyNotImplemented = !actionMap.containsKey(headers.get(HEADER_EVENT_KEY));
         final Boolean wrongHookUUIdFromBitbucket = !HOOK_ID.equals(headers.get(HEADER_HOOK_ID));
 
-        if(eventKeyHeaderNotSet || eventKeyNotImplemented || wrongHookUUIdFromBitbucket) ctx.clientError(400);
+        if(eventKeyHeaderNotSet || eventKeyNotImplemented || wrongHookUUIdFromBitbucket) {
+            ctx.clientError(400);
+            return;
+        }
 
         Class<Action> action = actionMap.get(headers.get(HEADER_EVENT_KEY));
         ctx.getRequest().getBody().map(typedData -> {

@@ -1,7 +1,6 @@
-package bbm.Handlers;
+package bbm.handlers;
 
 import bbm.database.orgs.Org;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import ratpack.handling.Context;
 import ratpack.render.RendererSupport;

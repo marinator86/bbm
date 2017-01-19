@@ -1,9 +1,9 @@
 package bbm;
 
-import bbm.Handlers.ActionHandler;
-import bbm.Handlers.ActionRenderer;
-import bbm.Handlers.AuthHandler;
-import bbm.Handlers.OptionalOrgRenderer;
+import bbm.handlers.ActionHandler;
+import bbm.handlers.ActionRenderer;
+import bbm.handlers.AuthHandler;
+import bbm.handlers.OptionalOrgRenderer;
 import bbm.actions.ActionModule;
 import bbm.database.DatabaseModule;
 import bbm.database.orgs.OrgModule;
@@ -41,12 +41,12 @@ public class Main {
 
 
             .handlers(chain -> chain
+                .all(AuthHandler.class)
                 .get(ctx -> ctx.render(groovyTemplate("index.html")))
 
                 .get("hello", ctx -> {
                   ctx.render("Hello!");
                 })
-
                 .get("db", ctx -> {
                   ctx.render("Hello db!");
                 })
