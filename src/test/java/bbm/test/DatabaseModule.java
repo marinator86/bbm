@@ -33,7 +33,10 @@ public class DatabaseModule extends AbstractModule {
         // can be called multiple times with different packages or classes
         morphia.mapPackage(DATABASE_PACKAGE);
 
-        final Datastore datastore = morphia.createDatastore(new MongoClient(), "morphia_test_bbm");
+
+        MongoClient mongoClient = new MongoClient();
+        mongoClient.dropDatabase("morphia_test_bbm");
+        final Datastore datastore = morphia.createDatastore(mongoClient, "morphia_test_bbm");
 
         return datastore;
     }

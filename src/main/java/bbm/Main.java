@@ -8,14 +8,19 @@ import bbm.actions.ActionModule;
 import bbm.database.DatabaseModule;
 import bbm.database.orgs.OrgModule;
 import bbm.database.branches.BranchModule;
+import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ratpack.pac4j.RatpackPac4j;
 import ratpack.server.BaseDir;
 import ratpack.server.RatpackServer;
 import ratpack.groovy.template.TextTemplateModule;
 import ratpack.guice.Guice;
+import ratpack.session.SessionModule;
 
 import static ratpack.groovy.Groovy.groovyTemplate;
+import static java.util.Collections.singletonMap;
 
 public class Main {
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
@@ -27,6 +32,7 @@ public class Main {
                 .env())
 
             .registry(Guice.registry(b -> {
+                b.module(SessionModule.class);
                 b.module(TextTemplateModule.class, conf -> conf.setStaticallyCompile(true));
                 b.module(DatabaseModule.class);
                 b.module(OrgModule.class);
@@ -40,21 +46,26 @@ public class Main {
 
 
 
-            .handlers(chain -> chain
-                .all(AuthHandler.class)
-                .get(ctx -> ctx.render(groovyTemplate("index.html")))
+            .handlers(chain -> {
+                final FormClient formClient = new FormClient("/loginForm.html", new SimpleTestUsernamePasswordAuthenticator());
+                chain
+                    .all(RatpackPac4j.authenticator("callback", formClient))
 
-                .get("hello", ctx -> {
-                  ctx.render("Hello!");
-                })
-                .get("db", ctx -> {
-                  ctx.render("Hello db!");
-                })
-
-                .post("hooks", ActionHandler.class)
-
-                .files(f -> f.dir("public"))
-            )
+                    .get(ctx -> ctx.render(groovyTemplate("index.html")))
+                    .prefix("admin", protectedchain -> {
+                        protectedchain
+                            .all(RatpackPac4j.requireAuth(FormClient.class))
+                            .path("index.html", ctx -> ctx.render("protected admin"));
+                    })
+                    .post("hooks", ActionHandler.class)
+                    .path("loginForm.html", ctx ->
+                            ctx.render(groovyTemplate(
+                                    singletonMap("callbackUrl", formClient.getCallbackUrl()),
+                                    "loginForm.html"
+                            ))
+                        )
+                    .files(f -> f.dir("public"));
+            })
         );
     }
 }
