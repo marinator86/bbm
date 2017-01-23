@@ -26,6 +26,7 @@ public class Main {
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String... args) throws Exception {
+
         RatpackServer.start(s -> s
             .serverConfig(c -> c
                 .baseDir(BaseDir.find())
@@ -43,8 +44,6 @@ public class Main {
                 b.bind(ActionRenderer.class);
                 b.bind(OptionalOrgRenderer.class);
             }))
-
-
 
             .handlers(chain -> {
                 final FormClient formClient = new FormClient("/loginForm.html", new SimpleTestUsernamePasswordAuthenticator());

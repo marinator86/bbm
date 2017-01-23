@@ -1,38 +1,48 @@
 buildscript {
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath "io.ratpack:ratpack-gradle:1.3.3"
-  }
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.ratpack:ratpack-gradle:1.3.3"
+    }
 }
 
 apply plugin: "io.ratpack.ratpack-groovy"
 
 repositories {
-  jcenter()
-  mavenCentral()
+    jcenter()
 }
 
 mainClassName = "bbm.Main"
 
 dependencies {
-  testCompile group: 'junit', name: 'junit', version: '4.11'
-  compile 'org.apache.logging.log4j:log4j-api:2.6.2'
-  compile 'org.apache.logging.log4j:log4j-core:2.6.2'
-  compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.6.2'
-  compile 'org.apache.commons:commons-lang3:3.4'
-  compile 'org.springframework:spring-context:4.3.1.RELEASE'
-  compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.0'
-  compile 'com.google.inject:guice:3.0'
-  compile group: 'io.ratpack', name: 'ratpack-pac4j', version: '1.4.4'
-  compile 'io.ratpack:ratpack-session:1.4.0-rc-1'
-  compile 'org.mongodb.morphia:morphia:1.2.1'
-  compile 'com.google.code.gson:gson:2.7'
-  compile group: 'org.pac4j', name: 'pac4j-core', version: '1.8.6'
-  compile group: 'org.pac4j', name: 'pac4j-http', version: '1.8.6'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile files('lib/tooling_wsdl_39.jar')
+    compile files('lib/partner_wsdl_39.jar')
+    compile files('lib/force-wsc-39.0.0.jar')
+    compile 'org.apache.logging.log4j:log4j-api:2.6.2'
+    compile 'org.apache.logging.log4j:log4j-core:2.6.2'
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.6.2'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.springframework:spring-context:4.3.1.RELEASE'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.0'
+    compile 'com.google.inject:guice:3.0'
+    compile group: 'io.ratpack', name: 'ratpack-pac4j', version: '1.4.4'
+    compile 'io.ratpack:ratpack-session:1.4.0-rc-1'
+    compile 'org.mongodb.morphia:morphia:1.2.1'
+    compile 'com.google.code.gson:gson:2.7'
+    compile group: 'org.pac4j', name: 'pac4j-core', version: '1.8.6'
+    compile group: 'org.pac4j', name: 'pac4j-http', version: '1.8.6'
+}
+
+jar {
+    include 'lib/*.jar'
 }
 
 task stage {
-  dependsOn installDist
+    dependsOn installDist
+}
+
+task listJars << {
+    configurations.compile.each { File file -> println file.name }
 }
