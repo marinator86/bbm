@@ -1,5 +1,6 @@
 package bbm.auth;
 
+import com.google.inject.Inject;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.credentials.authenticator.Authenticator;
 import ratpack.handling.Context;
@@ -14,6 +15,7 @@ public class ClientsProviderImpl implements RatpackPac4j.ClientsProvider{
 
     private final Authenticator authenticator;
 
+    @Inject
     public ClientsProviderImpl(Authenticator authenticator){
 
         this.authenticator = authenticator;
@@ -22,7 +24,9 @@ public class ClientsProviderImpl implements RatpackPac4j.ClientsProvider{
     @Override
     public Iterable<FormClient> get(Context ctx) {
         FormClient formClient = new FormClient();
-        formClient.setCallbackUrl("loginForm.html");
+        formClient.setName("FormClient");
+        formClient.setLoginUrl("/loginForm.html");
+        formClient.setCallbackUrl("callback");
         formClient.setAuthenticator(authenticator);
 
         ArrayList<FormClient> list = new ArrayList<>();

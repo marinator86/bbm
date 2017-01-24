@@ -1,6 +1,5 @@
 package bbm;
 
-import bbm.auth.AuthModule;
 import bbm.database.orgs.OrgModule;
 import bbm.handlers.*;
 import bbm.actions.ActionModule;
@@ -8,6 +7,7 @@ import bbm.database.DatabaseModule;
 import bbm.database.sandboxes.SandboxModule;
 import bbm.database.branches.BranchModule;
 import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.pac4j.RatpackPac4j;
@@ -24,6 +24,7 @@ public class Main {
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String... args) throws Exception {
+
         RatpackServer.start(s -> s
             .serverConfig(c -> c
                 .baseDir(BaseDir.find())
@@ -31,14 +32,12 @@ public class Main {
 
             .registry(Guice.registry(b -> {
                 b.module(SessionModule.class);
-                b.module(AuthModule.class);
                 b.module(TextTemplateModule.class, conf -> conf.setStaticallyCompile(true));
                 b.module(DatabaseModule.class);
                 b.module(OrgModule.class);
                 b.module(SandboxModule.class);
                 b.module(BranchModule.class);
                 b.module(ActionModule.class);
-                b.bind(AuthHandler.class);
                 b.bind(BranchActionHandler.class);
                 b.bind(OrgActionHandler.class);
                 b.bind(ActionRenderer.class);
@@ -46,8 +45,9 @@ public class Main {
             }))
 
             .handlers(chain -> {
+                final FormClient formClient = new FormClient("/loginForm.html", new SimpleTestUsernamePasswordAuthenticator());
                 chain
-                    .all(RatpackPac4j.authenticator("callback", chain.getRegistry().get(RatpackPac4j.ClientsProvider.class)))
+                    .all(RatpackPac4j.authenticator("callback", formClient))
 
                     .get(ctx -> ctx.render(groovyTemplate("index.html")))
                     .prefix("admin", protectedchain -> {
@@ -59,7 +59,7 @@ public class Main {
                     .post("hooks", BranchActionHandler.class)
                     .path("loginForm.html", ctx ->
                             ctx.render(groovyTemplate(
-                                    singletonMap("callbackUrl", "callback"),
+                                    singletonMap("callbackUrl", formClient.getCallbackUrl()),
                                     "loginForm.html"
                             ))
                         )
