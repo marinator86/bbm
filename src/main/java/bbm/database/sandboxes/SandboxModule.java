@@ -1,13 +1,13 @@
-package bbm.database.orgs;
+package bbm.database.sandboxes;
 
 import com.google.inject.AbstractModule;
 
 /**
  * Created by mario on 1/19/17.
  */
-public class OrgModule extends AbstractModule {
+public class SandboxModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(Orgs.class).to(OrgsImpl.class);
+        bind(Sandboxes.class).to(SandboxImpl.class);
     }
 }

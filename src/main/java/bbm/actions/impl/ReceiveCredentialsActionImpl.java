@@ -5,8 +5,8 @@ import bbm.actions.ActionResult;
 import bbm.actions.ReceiveCredentialsAction;
 import bbm.database.branches.Branch;
 import bbm.database.branches.Branches;
-import bbm.database.orgs.Org;
-import bbm.database.orgs.Orgs;
+import bbm.database.sandboxes.Sandbox;
+import bbm.database.sandboxes.Sandboxes;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
@@ -18,12 +18,12 @@ import java.util.Optional;
  */
 public class ReceiveCredentialsActionImpl implements ReceiveCredentialsAction {
 
-    private final Orgs orgs;
+    private final Sandboxes sandboxes;
     private final Branches branches;
 
     @Inject
-    public ReceiveCredentialsActionImpl(Orgs orgs, Branches branches) {
-        this.orgs = orgs;
+    public ReceiveCredentialsActionImpl(Sandboxes sandboxes, Branches branches) {
+        this.sandboxes = sandboxes;
         this.branches = branches;
     }
 
@@ -34,16 +34,16 @@ public class ReceiveCredentialsActionImpl implements ReceiveCredentialsAction {
         if(!(branch.isPresent() && branch.get().getManaged()))
             return getActionResult(false, branchName, null);
 
-        final Optional<Org> usedOrg = orgs.getUsedOrg(branch.get());
-        if(usedOrg.isPresent()) {
-            orgs.setBranch(usedOrg.get(), branch.get());
-            return getActionResult(true, branchName, usedOrg.get().getName());
+        final Optional<Sandbox> usedSandbox = sandboxes.getUsedSandbox(branch.get());
+        if(usedSandbox.isPresent()) {
+            sandboxes.setBranch(usedSandbox.get(), branch.get());
+            return getActionResult(true, branchName, usedSandbox.get().getName());
         }
 
-        final Optional<Org> freeOrg = orgs.getFreeOrg();
-        if(freeOrg.isPresent()) {
-            orgs.setBranch(freeOrg.get(), branch.get());
-            return getActionResult(true, branchName, freeOrg.get().getName());
+        final Optional<Sandbox> freeSandbox = sandboxes.getFreeSandbox();
+        if(freeSandbox.isPresent()) {
+            sandboxes.setBranch(freeSandbox.get(), branch.get());
+            return getActionResult(true, branchName, freeSandbox.get().getName());
         }
 
         return getActionResult(false, branchName, null);

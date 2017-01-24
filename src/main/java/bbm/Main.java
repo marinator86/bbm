@@ -6,7 +6,7 @@ import bbm.handlers.AuthHandler;
 import bbm.handlers.OptionalOrgRenderer;
 import bbm.actions.ActionModule;
 import bbm.database.DatabaseModule;
-import bbm.database.orgs.OrgModule;
+import bbm.database.sandboxes.SandboxModule;
 import bbm.database.branches.BranchModule;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
@@ -26,7 +26,6 @@ public class Main {
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String... args) throws Exception {
-
         RatpackServer.start(s -> s
             .serverConfig(c -> c
                 .baseDir(BaseDir.find())
@@ -36,7 +35,7 @@ public class Main {
                 b.module(SessionModule.class);
                 b.module(TextTemplateModule.class, conf -> conf.setStaticallyCompile(true));
                 b.module(DatabaseModule.class);
-                b.module(OrgModule.class);
+                b.module(SandboxModule.class);
                 b.module(BranchModule.class);
                 b.module(ActionModule.class);
                 b.bind(AuthHandler.class);

@@ -1,6 +1,6 @@
 package bbm.handlers;
 
-import bbm.database.orgs.Org;
+import bbm.database.sandboxes.Sandbox;
 import com.google.gson.JsonObject;
 import ratpack.handling.Context;
 import ratpack.render.RendererSupport;
@@ -14,9 +14,9 @@ public class OptionalOrgRenderer extends RendererSupport<Optional<?>> {
     @Override
     public void render(Context ctx, Optional<?> org) throws Exception {
         JsonObject result = new JsonObject();
-        if(org.isPresent() && org.get().getClass() == Org.class) {
+        if(org.isPresent() && org.get().getClass() == Sandbox.class) {
             result.addProperty("success", true);
-            result.addProperty("orgName", ((Org)org.get()).getName());
+            result.addProperty("orgName", ((Sandbox)org.get()).getName());
         } else {
             result.addProperty("success", false);
         }

@@ -1,4 +1,4 @@
-package bbm.database.orgs;
+package bbm.database.sandboxes;
 
 import bbm.database.branches.Branch;
 import org.bson.types.ObjectId;
@@ -9,8 +9,8 @@ import org.mongodb.morphia.annotations.Reference;
 /**
  * Created by mario on 1/19/17.
  */
-@Entity("orgs")
-public final class Org {
+@Entity("sandboxes")
+public final class Sandbox {
     @Id
     private ObjectId id;
     private String name;
@@ -18,7 +18,7 @@ public final class Org {
     @Reference
     private Branch currentBranch;
 
-    protected Org(){
+    protected Sandbox(){
     }
 
     protected ObjectId getId() {
