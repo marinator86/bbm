@@ -1,5 +1,6 @@
 package bbm;
 
+import bbm.auth.AuthModule;
 import bbm.handlers.ActionHandler;
 import bbm.handlers.ActionRenderer;
 import bbm.handlers.AuthHandler;
@@ -9,7 +10,6 @@ import bbm.database.DatabaseModule;
 import bbm.database.sandboxes.SandboxModule;
 import bbm.database.branches.BranchModule;
 import org.pac4j.http.client.indirect.FormClient;
-import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.pac4j.RatpackPac4j;
@@ -33,6 +33,7 @@ public class Main {
 
             .registry(Guice.registry(b -> {
                 b.module(SessionModule.class);
+                b.module(AuthModule.class);
                 b.module(TextTemplateModule.class, conf -> conf.setStaticallyCompile(true));
                 b.module(DatabaseModule.class);
                 b.module(SandboxModule.class);
@@ -45,9 +46,8 @@ public class Main {
             }))
 
             .handlers(chain -> {
-                final FormClient formClient = new FormClient("/loginForm.html", new SimpleTestUsernamePasswordAuthenticator());
                 chain
-                    .all(RatpackPac4j.authenticator("callback", formClient))
+                    .all(RatpackPac4j.authenticator("callback", chain.getRegistry().get(RatpackPac4j.ClientsProvider.class)))
 
                     .get(ctx -> ctx.render(groovyTemplate("index.html")))
                     .prefix("admin", protectedchain -> {
@@ -58,7 +58,7 @@ public class Main {
                     .post("hooks", ActionHandler.class)
                     .path("loginForm.html", ctx ->
                             ctx.render(groovyTemplate(
-                                    singletonMap("callbackUrl", formClient.getCallbackUrl()),
+                                    singletonMap("callbackUrl", "callback"),
                                     "loginForm.html"
                             ))
                         )
