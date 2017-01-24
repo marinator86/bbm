@@ -1,6 +1,7 @@
 package bbm.database.sandboxes;
 
 import bbm.database.branches.Branch;
+import bbm.database.orgs.Org;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -17,6 +18,9 @@ public final class Sandbox {
 
     @Reference
     private Branch currentBranch;
+
+    @Reference
+    private Org org;
 
     protected Sandbox(){
     }
@@ -38,5 +42,11 @@ public final class Sandbox {
     }
     protected void setName(String name) {
         this.name = name;
+    }
+    public Org getOrg() {
+        return org;
+    }
+    protected void setOrg(Org org) {
+        this.org = org;
     }
 }

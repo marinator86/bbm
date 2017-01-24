@@ -1,10 +1,8 @@
 package bbm;
 
 import bbm.auth.AuthModule;
-import bbm.handlers.ActionHandler;
-import bbm.handlers.ActionRenderer;
-import bbm.handlers.AuthHandler;
-import bbm.handlers.OptionalOrgRenderer;
+import bbm.database.orgs.OrgModule;
+import bbm.handlers.*;
 import bbm.actions.ActionModule;
 import bbm.database.DatabaseModule;
 import bbm.database.sandboxes.SandboxModule;
@@ -36,11 +34,13 @@ public class Main {
                 b.module(AuthModule.class);
                 b.module(TextTemplateModule.class, conf -> conf.setStaticallyCompile(true));
                 b.module(DatabaseModule.class);
+                b.module(OrgModule.class);
                 b.module(SandboxModule.class);
                 b.module(BranchModule.class);
                 b.module(ActionModule.class);
                 b.bind(AuthHandler.class);
-                b.bind(ActionHandler.class);
+                b.bind(BranchActionHandler.class);
+                b.bind(OrgActionHandler.class);
                 b.bind(ActionRenderer.class);
                 b.bind(OptionalOrgRenderer.class);
             }))
@@ -53,9 +53,10 @@ public class Main {
                     .prefix("admin", protectedchain -> {
                         protectedchain
                             .all(RatpackPac4j.requireAuth(FormClient.class))
-                            .path("index.html", ctx -> ctx.render("protected admin"));
+                            .path("index.html", ctx -> ctx.render("protected admin"))
+                            .path("sync", OrgActionHandler.class);
                     })
-                    .post("hooks", ActionHandler.class)
+                    .post("hooks", BranchActionHandler.class)
                     .path("loginForm.html", ctx ->
                             ctx.render(groovyTemplate(
                                     singletonMap("callbackUrl", "callback"),

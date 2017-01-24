@@ -1,6 +1,7 @@
 package bbm.database.sandboxes;
 
 import bbm.database.branches.Branch;
+import bbm.database.orgs.Org;
 
 import java.util.Optional;
 
@@ -11,6 +12,6 @@ public interface Sandboxes {
     Optional<Sandbox> getFreeSandbox();
     Optional<Sandbox> getUsedSandbox(Branch branch);
     Optional<Sandbox> getSandbox(String name);
-    void createSandbox(String name);
+    void createSandbox(String name, Org org);
     void setBranch(Sandbox sandbox, Branch branch);
 }

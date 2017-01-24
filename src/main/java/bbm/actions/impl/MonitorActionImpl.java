@@ -1,7 +1,7 @@
 package bbm.actions.impl;
 
-import bbm.actions.ActionContext;
 import bbm.actions.ActionResult;
+import bbm.actions.context.BranchActionContext;
 import bbm.actions.MonitorAction;
 import bbm.database.branches.Branches;
 import com.google.common.collect.ImmutableMap;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by mario on 1/18/17.
  */
-public class MonitorActionImpl implements MonitorAction {
+public class MonitorActionImpl implements MonitorAction{
 
     private final Branches branches;
 
@@ -22,7 +22,7 @@ public class MonitorActionImpl implements MonitorAction {
     }
 
     @Override
-    public ActionResult execute(ActionContext context) {
+    public ActionResult apply(BranchActionContext context) {
         final String branchName = context.getBranchName();
         branches.createManagedBranch(branchName);
 

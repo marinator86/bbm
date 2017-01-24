@@ -1,6 +1,7 @@
 package bbm.handlers;
 
 import bbm.actions.*;
+import bbm.actions.context.BranchActionContext;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonParser;
 import org.slf4j.Logger;
@@ -14,12 +15,12 @@ import java.util.Map;
 /**
  * Created by mario on 1/18/17.
  */
-public class ActionHandler implements Handler {
+public class BranchActionHandler implements Handler {
     private static final String HEADER_EVENT_KEY = "X-Event-Key";
     private static final String HEADER_HOOK_ID = "X-Hook-UUID";
     private static final String HOOK_ID = "a1bb129d-e8a6-4201-9980-3b19a8f6e98e";
 
-    private final static Logger logger = LoggerFactory.getLogger(ActionHandler.class);
+    private final static Logger logger = LoggerFactory.getLogger(BranchActionHandler.class);
 
     private final static Map<String, Class> actionMap = ImmutableMap.of(
             "pullrequest:created", MonitorAction.class,
@@ -52,7 +53,7 @@ public class ActionHandler implements Handler {
         })
         .onError(throwable -> ctx.error(throwable))
         .onNull(() -> ctx.clientError(400))
-        .map(branchName -> ctx.get(action).execute(() -> branchName))
+        .map(branchName -> ctx.get(action).apply((BranchActionContext) () -> branchName))
         .then(actionResult -> ctx.render(actionResult));
     }
 }

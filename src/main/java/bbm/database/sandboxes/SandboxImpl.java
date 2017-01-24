@@ -1,6 +1,7 @@
 package bbm.database.sandboxes;
 
 import bbm.database.branches.Branch;
+import bbm.database.orgs.Org;
 import com.google.inject.Inject;
 import org.mongodb.morphia.Datastore;
 
@@ -42,10 +43,11 @@ class SandboxImpl implements Sandboxes {
     }
 
     @Override
-    public void createSandbox(String name) {
+    public void createSandbox(String name, Org org) {
         if(getSandbox(name).isPresent()) return;
         Sandbox sandbox = new Sandbox();
         sandbox.setName(name);
+        sandbox.setOrg(org);
         datastore.save(sandbox);
     }
 

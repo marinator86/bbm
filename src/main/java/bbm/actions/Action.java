@@ -1,14 +1,11 @@
 package bbm.actions;
 
-import ratpack.exec.Promise;
+import bbm.actions.context.ActionContext;
+
+import java.util.function.Function;
 
 /**
  * Created by mario on 1/18/17.
  */
-public interface Action {
-
-    /**
-     * A general action that returns a success flag and a key-value response for a client.
-     */
-    ActionResult execute(ActionContext context);
+public interface Action<T extends ActionContext> extends Function<T, ActionResult> {
 }

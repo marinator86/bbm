@@ -1,7 +1,7 @@
 package bbm.auth;
 
 import com.google.inject.AbstractModule;
-import org.pac4j.core.credentials.authenticator.Authenticator;
+import org.pac4j.http.credentials.authenticator.Authenticator;
 import ratpack.pac4j.RatpackPac4j;
 
 /**

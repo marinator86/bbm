@@ -1,9 +1,7 @@
 package bbm.actions.impl;
 
-import bbm.actions.Action;
-import bbm.actions.ActionContext;
-import bbm.actions.ActionResult;
-import bbm.actions.UnmonitorAction;
+import bbm.actions.*;
+import bbm.actions.context.BranchActionContext;
 import bbm.database.branches.Branch;
 import bbm.database.branches.Branches;
 import com.google.common.collect.ImmutableMap;
@@ -25,7 +23,7 @@ public class UnmonitorActionImpl implements UnmonitorAction {
     }
 
     @Override
-    public ActionResult execute(ActionContext context) {
+    public ActionResult apply(BranchActionContext context) {
         final String branchName = context.getBranchName();
 
         Optional<Branch> branch = branches.getBranch(branchName);

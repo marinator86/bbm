@@ -1,7 +1,7 @@
 package bbm.actions.impl;
 
-import bbm.actions.ActionContext;
 import bbm.actions.ActionResult;
+import bbm.actions.context.BranchActionContext;
 import bbm.actions.ReceiveCredentialsAction;
 import bbm.database.branches.Branch;
 import bbm.database.branches.Branches;
@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * Created by mario on 1/18/17.
  */
-public class ReceiveCredentialsActionImpl implements ReceiveCredentialsAction {
+public class ReceiveCredentialsActionImpl implements ReceiveCredentialsAction{
 
     private final Sandboxes sandboxes;
     private final Branches branches;
@@ -28,7 +28,7 @@ public class ReceiveCredentialsActionImpl implements ReceiveCredentialsAction {
     }
 
     @Override
-    public ActionResult execute(ActionContext context) {
+    public ActionResult apply(BranchActionContext context) {
         final String branchName = context.getBranchName();
         final Optional<Branch> branch = branches.getBranch(branchName);
         if(!(branch.isPresent() && branch.get().getManaged()))
