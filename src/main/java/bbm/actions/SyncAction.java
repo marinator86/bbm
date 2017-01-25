@@ -7,5 +7,5 @@ import java.util.function.Function;
 /**
  * Created by mario on 1/18/17.
  */
-public interface Action<T extends ActionContext> extends Function<T, ActionResult> {
+public interface SyncAction<T extends ActionContext> extends Function<T, ActionResult> {
 }

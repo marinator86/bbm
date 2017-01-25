@@ -1,52 +1,42 @@
 package bbm.actions.impl;
 
-import bbm.actions.*;
+import bbm.actions.ActionResult;
 import bbm.actions.context.BranchActionContext;
-import bbm.database.branches.Branch;
+import bbm.actions.MonitorSyncAction;
 import bbm.database.branches.Branches;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Created by mario on 1/18/17.
  */
-public class UnmonitorActionImpl implements UnmonitorAction {
+public class MonitorSyncActionImpl implements MonitorSyncAction {
 
     private final Branches branches;
 
     @Inject
-    public UnmonitorActionImpl(Branches branches) {
+    public MonitorSyncActionImpl(Branches branches) {
         this.branches = branches;
     }
 
     @Override
     public ActionResult apply(BranchActionContext context) {
         final String branchName = context.getBranchName();
+        branches.createManagedBranch(branchName);
 
-        Optional<Branch> branch = branches.getBranch(branchName);
-        if(branch.isPresent()){
-            branches.setUnmanaged(branch.get());
-            return getActionResult(branchName, true);
-        }
-
-        return getActionResult(branchName, false);
-    }
-
-    private ActionResult getActionResult(final String branchName, final Boolean success) {
         return new ActionResult() {
             @Override
             public Boolean getSuccess() {
-                return success;
+                return true;
             }
 
             @Override
             public Map<String, String> getPayload() {
                 return ImmutableMap.of(
-                        "actionType", "unmonitor",
-                        "branchName", branchName
+                        "actionType", "monitor",
+                        "branchName", context.getBranchName()
                 );
             }
         };

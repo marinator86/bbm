@@ -51,14 +51,14 @@ public class SandboxAllocationTest {
         sandboxes.createSandbox("org1", testOrg);
         sandboxes.createSandbox("org2", testOrg);
 
-        ReceiveCredentialsAction credAction = injector.getInstance(ReceiveCredentialsAction.class);
+        ReceiveCredentialsSyncAction credAction = injector.getInstance(ReceiveCredentialsSyncAction.class);
         ActionResult result1 = credAction.apply(() -> "branch1");
         ActionResult result2 = credAction.apply(() -> "branch2");
         Assert.assertEquals(true, result1.getSuccess());
         Assert.assertEquals(true, result2.getSuccess());
         Assert.assertEquals(false, sandboxes.getFreeSandbox().isPresent());
 
-        UnmonitorAction unmonitorAction = injector.getInstance(UnmonitorAction.class);
+        UnmonitorSyncAction unmonitorAction = injector.getInstance(UnmonitorSyncAction.class);
         ActionResult result3 = unmonitorAction.apply(() -> "branch1");
         Assert.assertEquals(true, result3.getSuccess());
         Assert.assertEquals(true, sandboxes.getFreeSandbox().isPresent());

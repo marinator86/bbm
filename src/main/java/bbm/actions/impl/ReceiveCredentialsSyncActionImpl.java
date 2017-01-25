@@ -1,8 +1,8 @@
 package bbm.actions.impl;
 
 import bbm.actions.ActionResult;
+import bbm.actions.ReceiveCredentialsSyncAction;
 import bbm.actions.context.BranchActionContext;
-import bbm.actions.ReceiveCredentialsAction;
 import bbm.database.branches.Branch;
 import bbm.database.branches.Branches;
 import bbm.database.sandboxes.Sandbox;
@@ -16,13 +16,13 @@ import java.util.Optional;
 /**
  * Created by mario on 1/18/17.
  */
-public class ReceiveCredentialsActionImpl implements ReceiveCredentialsAction{
+public class ReceiveCredentialsSyncActionImpl implements ReceiveCredentialsSyncAction {
 
     private final Sandboxes sandboxes;
     private final Branches branches;
 
     @Inject
-    public ReceiveCredentialsActionImpl(Sandboxes sandboxes, Branches branches) {
+    public ReceiveCredentialsSyncActionImpl(Sandboxes sandboxes, Branches branches) {
         this.sandboxes = sandboxes;
         this.branches = branches;
     }

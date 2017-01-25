@@ -1,7 +1,7 @@
 package bbm.actions;
 
 import bbm.actions.impl.*;
-import bbm.actions.impl.UnmonitorActionImpl;
+import bbm.actions.impl.UnmonitorSyncActionImpl;
 import com.google.inject.AbstractModule;
 
 /**
@@ -10,9 +10,9 @@ import com.google.inject.AbstractModule;
 public class ActionModule extends AbstractModule{
     @Override
     protected void configure() {
-        bind(MonitorAction.class).to(MonitorActionImpl.class);
-        bind(ReceiveCredentialsAction.class).to(ReceiveCredentialsActionImpl.class);
-        bind(UnmonitorAction.class).to(UnmonitorActionImpl.class);
-        bind(SandboxSyncAction.class).to(SandboxSyncActionImpl.class);
+        bind(MonitorSyncAction.class).to(MonitorSyncActionImpl.class);
+        bind(ReceiveCredentialsSyncAction.class).to(ReceiveCredentialsSyncActionImpl.class);
+        bind(UnmonitorSyncAction.class).to(UnmonitorSyncActionImpl.class);
+        bind(SandboxSyncAction.class).to(SandboxSyncSyncActionImpl.class);
     }
 }

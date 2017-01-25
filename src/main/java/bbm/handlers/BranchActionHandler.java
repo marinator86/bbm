@@ -23,9 +23,9 @@ public class BranchActionHandler implements Handler {
     private final static Logger logger = LoggerFactory.getLogger(BranchActionHandler.class);
 
     private final static Map<String, Class> actionMap = ImmutableMap.of(
-            "pullrequest:created", MonitorAction.class,
-            "pullrequest:fulfilled", UnmonitorAction.class,
-            "pullrequest:rejected", UnmonitorAction.class
+            "pullrequest:created", MonitorSyncAction.class,
+            "pullrequest:fulfilled", UnmonitorSyncAction.class,
+            "pullrequest:rejected", UnmonitorSyncAction.class
     );
 
     @Override
@@ -41,7 +41,7 @@ public class BranchActionHandler implements Handler {
             return;
         }
 
-        Class<Action> action = actionMap.get(headers.get(HEADER_EVENT_KEY));
+        Class<SyncAction> action = actionMap.get(headers.get(HEADER_EVENT_KEY));
         ctx.getRequest().getBody().map(typedData -> {
             final JsonParser parser = new JsonParser();
             return parser.parse(typedData.getText())
