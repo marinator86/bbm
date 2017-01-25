@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface Sandboxes {
     Optional<Sandbox> getFreeSandbox();
     Optional<Sandbox> getUsedSandbox(Branch branch);
-    Optional<Sandbox> getSandbox(String name);
-    void createSandbox(String name, Org org);
+    Optional<Sandbox> getSandbox(String salesforceId);
+    void createSandbox(String name, String salesForceId, Org org);
     void setBranch(Sandbox sandbox, Branch branch);
 }

@@ -37,16 +37,17 @@ class SandboxImpl implements Sandboxes {
     }
 
     @Override
-    public Optional<Sandbox> getSandbox(String name) {
-        Sandbox sandbox = datastore.find(Sandbox.class).field("name").equal(name).get();
+    public Optional<Sandbox> getSandbox(String salesforceId) {
+        Sandbox sandbox = datastore.find(Sandbox.class).field("salesforceId").equal(salesforceId).get();
         return sandbox == null ? Optional.empty() : Optional.of(sandbox);
     }
 
     @Override
-    public void createSandbox(String name, Org org) {
+    public void createSandbox(String name, String salesforceId, Org org) {
         if(getSandbox(name).isPresent()) return;
         Sandbox sandbox = new Sandbox();
         sandbox.setName(name);
+        sandbox.setSalesforceId(salesforceId);
         sandbox.setOrg(org);
         datastore.save(sandbox);
     }

@@ -15,6 +15,7 @@ public final class Sandbox {
     @Id
     private ObjectId id;
     private String name;
+    private String salesforceId;
 
     @Reference
     private Branch currentBranch;
@@ -48,5 +49,11 @@ public final class Sandbox {
     }
     protected void setOrg(Org org) {
         this.org = org;
+    }
+    public String getSalesforceId() {
+        return salesforceId;
+    }
+    protected void setSalesforceId(String salesforceId) {
+        this.salesforceId = salesforceId;
     }
 }

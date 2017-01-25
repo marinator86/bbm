@@ -8,6 +8,7 @@ import bbm.database.orgs.OrgModule;
 import bbm.database.orgs.Orgs;
 import bbm.database.sandboxes.SandboxModule;
 import bbm.database.sandboxes.Sandboxes;
+import bbm.salesforce.SalesforceModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.junit.Assert;
@@ -35,7 +36,8 @@ public class SandboxAllocationTest {
                 new OrgModule(),
                 new BranchModule(),
                 new SandboxModule(),
-                new ActionModule()
+                new ActionModule(),
+                new SalesforceModule()
         );
         Datastore datastore = injector.getInstance(Datastore.class);
 
@@ -48,8 +50,8 @@ public class SandboxAllocationTest {
         Org testOrg = orgs.createOrg("testParentOrgId");
 
         Sandboxes sandboxes = injector.getInstance(Sandboxes.class);
-        sandboxes.createSandbox("org1", testOrg);
-        sandboxes.createSandbox("org2", testOrg);
+        sandboxes.createSandbox("org1", "adssd", testOrg);
+        sandboxes.createSandbox("org2", "adsse", testOrg);
 
         ReceiveCredentialsSyncAction credAction = injector.getInstance(ReceiveCredentialsSyncAction.class);
         ActionResult result1 = credAction.apply(() -> "branch1");

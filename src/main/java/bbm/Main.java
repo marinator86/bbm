@@ -6,6 +6,7 @@ import bbm.actions.ActionModule;
 import bbm.database.DatabaseModule;
 import bbm.database.sandboxes.SandboxModule;
 import bbm.database.branches.BranchModule;
+import bbm.salesforce.SalesforceModule;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.slf4j.Logger;
@@ -38,6 +39,7 @@ public class Main {
                 b.module(SandboxModule.class);
                 b.module(BranchModule.class);
                 b.module(ActionModule.class);
+                b.module(SalesforceModule.class);
                 b.bind(BranchActionHandler.class);
                 b.bind(OrgActionHandler.class);
                 b.bind(ActionRenderer.class);
