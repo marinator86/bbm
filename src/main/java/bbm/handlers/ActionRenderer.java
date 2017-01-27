@@ -21,7 +21,7 @@ public class ActionRenderer extends RendererSupport<ActionResult> {
         for(String key : payload.keySet()){
             payloadObject.addProperty(key, payload.get(key).toString());
         }
-        result.addProperty("payload", payloadObject.toString());
+        result.add("payload", payloadObject);
         ctx.render(result.toString());
     }
 }
