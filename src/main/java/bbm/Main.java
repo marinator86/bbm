@@ -52,6 +52,7 @@ public class Main {
                     .all(RatpackPac4j.authenticator("callback", formClient))
 
                     .get(ctx -> ctx.render(groovyTemplate("index.html")))
+                    .get("instruct/:repositoryUID/:branchName", ctx -> ctx.render("{\"success\":\"true\",\"buildType\":\"DEPLOY\",\"sandbox\":\"dynOrg1\"}"))
                     .prefix("admin", protectedchain -> {
                         protectedchain
                             .all(RatpackPac4j.requireAuth(FormClient.class))
