@@ -44,6 +44,7 @@ public class Main {
                 b.bind(OrgActionHandler.class);
                 b.bind(ActionRenderer.class);
                 b.bind(OptionalOrgRenderer.class);
+                b.bind(InstructionActionHandler.class);
             }))
 
             .handlers(chain -> {
@@ -52,7 +53,7 @@ public class Main {
                     .all(RatpackPac4j.authenticator("callback", formClient))
 
                     .get(ctx -> ctx.render(groovyTemplate("index.html")))
-                    .get("instruct/:repositoryUID/:branchName", ctx -> ctx.render("{\"success\":\"true\",\"buildType\":\"DEPLOY\",\"sandbox\":\"dynOrg1\"}"))
+                    .get("instruct/:repositoryUID/:branchName", InstructionActionHandler.class)
                     .prefix("admin", protectedchain -> {
                         protectedchain
                             .all(RatpackPac4j.requireAuth(FormClient.class))
