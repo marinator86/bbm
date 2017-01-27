@@ -1,6 +1,7 @@
 package bbm.test;
 
 import bbm.actions.*;
+import bbm.actions.context.InstructionActionContext;
 import bbm.database.branches.BranchModule;
 import bbm.database.branches.Branches;
 import bbm.database.orgs.Org;
@@ -41,21 +42,23 @@ public class SandboxAllocationTest {
         );
         Datastore datastore = injector.getInstance(Datastore.class);
 
-        Branches branches = injector.getInstance(Branches.class);
-        branches.createManagedBranch("branch1");
-        branches.createManagedBranch("branch2");
-        branches.createManagedBranch("branch3");
-
         Orgs orgs = injector.getInstance(Orgs.class);
         Org testOrg = orgs.createOrg("testParentOrgId");
 
         Sandboxes sandboxes = injector.getInstance(Sandboxes.class);
         sandboxes.createSandbox("org1", "adssd", testOrg);
         sandboxes.createSandbox("org2", "adsse", testOrg);
+        //sandboxes.createSandbox("org3", "adssf", testOrg);
 
-        ReceiveCredentialsSyncAction credAction = injector.getInstance(ReceiveCredentialsSyncAction.class);
-        ActionResult result1 = credAction.apply(() -> "branch1");
-        ActionResult result2 = credAction.apply(() -> "branch2");
+        Branches branches = injector.getInstance(Branches.class);
+        branches.createManagedBranch("branch1");
+        sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch1").get());
+        branches.createManagedBranch("branch2");
+        sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch2").get());
+
+        InstructionAction credAction = injector.getInstance(InstructionAction.class);
+        ActionResult result1 = credAction.apply(getInstructionActionContext("branch1"));
+        ActionResult result2 = credAction.apply(getInstructionActionContext("branch2"));
         Assert.assertEquals(true, result1.getSuccess());
         Assert.assertEquals(true, result2.getSuccess());
         Assert.assertEquals(false, sandboxes.getFreeSandbox().isPresent());
@@ -65,12 +68,29 @@ public class SandboxAllocationTest {
         Assert.assertEquals(true, result3.getSuccess());
         Assert.assertEquals(true, sandboxes.getFreeSandbox().isPresent());
 
-        ActionResult result4 = credAction.apply(() -> "branch1");
-        Assert.assertEquals(false, result4.getSuccess());
+        ActionResult result4 = credAction.apply(getInstructionActionContext("branch1"));
+        Assert.assertEquals(true, result4.getSuccess());
         Assert.assertEquals(true, sandboxes.getFreeSandbox().isPresent());
 
-        ActionResult result5 = credAction.apply(() -> "branch3");
+        branches.createManagedBranch("branch3");
+        sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch3").get());
+
+        ActionResult result5 = credAction.apply(getInstructionActionContext("branch3"));
         Assert.assertEquals(true, result5.getSuccess());
         Assert.assertEquals(false, sandboxes.getFreeSandbox().isPresent());
+    }
+
+    private InstructionActionContext getInstructionActionContext(String branch) {
+        return new InstructionActionContext() {
+            @Override
+            public String getRepositoryUID() {
+                return "123";
+            }
+
+            @Override
+            public String getBranchName() {
+                return branch;
+            }
+        };
     }
 }

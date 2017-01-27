@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import ratpack.handling.Context;
 import ratpack.render.RendererSupport;
 
+import java.util.Map;
+
 /**
  * Created by mario on 1/18/17.
  */
@@ -14,7 +16,12 @@ public class ActionRenderer extends RendererSupport<ActionResult> {
     public void render(Context ctx, ActionResult actionResult) throws Exception {
         JsonObject result = new JsonObject();
         result.addProperty("success", actionResult.getSuccess());
-        result.addProperty("payload", new Gson().toJson(actionResult.getPayload()));
+        Map<String, String> payload = actionResult.getPayload();
+        JsonObject payloadObject = new JsonObject();
+        for(String key : payload.keySet()){
+            payloadObject.addProperty(key, payload.get(key).toString());
+        }
+        result.addProperty("payload", payloadObject.toString());
         ctx.render(result.toString());
     }
 }
