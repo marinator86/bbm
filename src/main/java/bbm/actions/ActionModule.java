@@ -11,7 +11,6 @@ public class ActionModule extends AbstractModule{
     @Override
     protected void configure() {
         bind(MonitorSyncAction.class).to(MonitorSyncActionImpl.class);
-        bind(ReceiveCredentialsSyncAction.class).to(ReceiveCredentialsSyncActionImpl.class);
         bind(UnmonitorSyncAction.class).to(UnmonitorSyncActionImpl.class);
         bind(SandboxSyncAction.class).to(SandboxSyncSyncActionImpl.class);
         bind(InstructionAction.class).to(InstructionActionImpl.class);

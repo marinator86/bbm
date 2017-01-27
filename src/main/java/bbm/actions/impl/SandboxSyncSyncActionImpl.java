@@ -46,13 +46,7 @@ public class SandboxSyncSyncActionImpl implements SandboxSyncAction {
         .onError(throwable -> logger.error("SF ToolingConnection failed!", throwable))
         .map(pair -> {
             GetUserInfoResult userInfo = pair.getRight().getUserInfo();
-            Optional<Org> orgOptional = orgs.getOrg(userInfo.getOrganizationId());
-            Org resultOrg;
-            if(orgOptional.isPresent()) {
-                resultOrg = orgOptional.get();
-            } else {
-                resultOrg = orgs.createOrg(userInfo.getOrganizationId());
-            }
+            Org resultOrg = getOrCreateOrg(userInfo);
 
             List<Sandbox> resultSandboxes = new ArrayList();
             for(SandboxInfo info : pair.left()){
@@ -78,6 +72,16 @@ public class SandboxSyncSyncActionImpl implements SandboxSyncAction {
             payload.put("sandboxes", String.valueOf(pair.getRight().size()));
             orgActionContext.getContext().render(getActionResult(payload, true));
         });
+    }
+
+    private Org getOrCreateOrg(GetUserInfoResult userInfo) {
+        Org resultOrg;Optional<Org> orgOptional = orgs.getOrg(userInfo.getOrganizationId());
+        if(orgOptional.isPresent()) {
+            resultOrg = orgOptional.get();
+        } else {
+            resultOrg = orgs.createOrg(userInfo.getOrganizationId());
+        }
+        return resultOrg;
     }
 
     private ActionResult getActionResult(final Map<String, String> payLoad, final Boolean success) {
