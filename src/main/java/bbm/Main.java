@@ -1,6 +1,7 @@
 package bbm;
 
 import bbm.database.orgs.OrgModule;
+import bbm.database.repositories.RepositoryModule;
 import bbm.handlers.*;
 import bbm.actions.ActionModule;
 import bbm.database.DatabaseModule;
@@ -35,6 +36,7 @@ public class Main {
                 b.module(SessionModule.class);
                 b.module(TextTemplateModule.class, conf -> conf.setStaticallyCompile(true));
                 b.module(DatabaseModule.class);
+                b.module(RepositoryModule.class);
                 b.module(OrgModule.class);
                 b.module(SandboxModule.class);
                 b.module(BranchModule.class);
