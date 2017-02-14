@@ -11,14 +11,11 @@ import org.mongodb.morphia.annotations.Id;
 public final class Repository {
     @Id
     private ObjectId id;
-    private String name;
-
+    private String repo_slug;
     private String uuid;
-    private Repositories.Provider provider;
-
     private String refreshToken;
 
-    public ObjectId getId() {
+    protected ObjectId getId() {
         return id;
     }
 
@@ -26,19 +23,21 @@ public final class Repository {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getRepo_slug() {
+        return repo_slug;
     }
 
-    protected void setName(String name) {
-        this.name = name;
+    protected void setRepo_slug(String repo_slug) {
+        this.repo_slug = repo_slug;
     }
+
+    private Repositories.Provider provider;
 
     public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    protected void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -46,7 +45,7 @@ public final class Repository {
         return provider;
     }
 
-    public void setProvider(Repositories.Provider provider) {
+    protected void setProvider(Repositories.Provider provider) {
         this.provider = provider;
     }
 

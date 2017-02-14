@@ -28,7 +28,7 @@ public class RepositoriesImpl implements Repositories {
 
         Repository newRepo = new Repository();
         newRepo.setUuid(uuid);
-        newRepo.setName(name);
+        newRepo.setRepo_slug(name);
         newRepo.setProvider(provider);
         datastore.save(newRepo);
     }
