@@ -14,5 +14,6 @@ public class ActionModule extends AbstractModule{
         bind(UnmonitorSyncAction.class).to(UnmonitorSyncActionImpl.class);
         bind(SandboxSyncAction.class).to(SandboxSyncSyncActionImpl.class);
         bind(InstructionAction.class).to(InstructionActionImpl.class);
+        bind(BuildTriggerAction.class).to(BuildTriggerActionImpl.class);
     }
 }

@@ -2,13 +2,17 @@ package bbm.handlers;
 
 import bbm.actions.*;
 import bbm.actions.context.BranchActionContext;
+import bbm.actions.context.BuildTriggerActionContext;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ratpack.exec.Promise;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
 import ratpack.http.Headers;
+import ratpack.http.TypedData;
 
 import java.util.Map;
 
@@ -42,18 +46,48 @@ public class BranchActionHandler implements Handler {
         }
 
         Class<SyncAction> action = actionMap.get(headers.get(HEADER_EVENT_KEY));
-        ctx.getRequest().getBody().map(typedData -> {
-            final JsonParser parser = new JsonParser();
-            return parser.parse(typedData.getText())
-                    .getAsJsonObject()
-                    .getAsJsonObject("pullrequest")
-                    .getAsJsonObject("source")
-                    .getAsJsonObject("branch")
-                    .get("name").getAsString();
-        })
+        Promise<TypedData> body = ctx.getRequest().getBody();
+
+        body.fork().map(typedData -> new JsonParser().parse(typedData.getText()).getAsJsonObject())
         .onError(throwable -> ctx.error(throwable))
         .onNull(() -> ctx.clientError(400))
+        .map(root -> extractBranchName(root))
         .map(branchName -> ctx.get(action).apply((BranchActionContext) () -> branchName))
+        .onError(throwable -> logger.error("Error in hook execution", throwable))
         .then(actionResult -> ctx.render(actionResult));
+
+        body.fork().map(typedData -> new JsonParser().parse(typedData.getText()).getAsJsonObject())
+        .map(root -> {
+            String branchName = extractBranchName(root);
+            String repoUuid = extractRepoUuid(root);
+            ctx.get(BuildTriggerAction.class).execute(getBuildTriggerActionContext(branchName, repoUuid));
+            return null;
+        })
+        .onError(throwable -> logger.error("Error in Buildtrigger exec", throwable));
+    }
+
+    private BuildTriggerActionContext getBuildTriggerActionContext(final String branchName, final String repoUuid) {
+        return new BuildTriggerActionContext() {
+            @Override
+            public String getBranchName() {
+                return branchName;
+            }
+
+            @Override
+            public String getRepUuid() {
+                return repoUuid;
+            }
+        };
+    }
+
+    private String extractRepoUuid(JsonObject root) {
+        return root.getAsJsonObject("repository").get("uuid").getAsString();
+    }
+
+    private String extractBranchName(JsonObject root) {
+        return root.getAsJsonObject("pullrequest")
+                .getAsJsonObject("source")
+                .getAsJsonObject("branch")
+                .get("name").getAsString();
     }
 }
