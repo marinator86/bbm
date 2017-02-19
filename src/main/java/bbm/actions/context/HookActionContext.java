@@ -3,10 +3,9 @@ package bbm.actions.context;
 import bbm.database.repositories.Repository;
 
 /**
- * Created by mario on 2/19/17.
+ * Created by mario on 2/14/17.
  */
-public interface BuildTriggerContext {
-
-    Repository getRepository();
+public interface HookActionContext {
+    String getRepoUuid();
     String getBranchName();
 }

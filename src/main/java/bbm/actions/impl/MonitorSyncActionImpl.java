@@ -1,8 +1,8 @@
 package bbm.actions.impl;
 
 import bbm.actions.ActionResult;
-import bbm.actions.context.BranchActionContext;
-import bbm.actions.MonitorSyncAction;
+import bbm.actions.HookAction;
+import bbm.actions.context.HookActionContext;
 import bbm.database.branches.Branches;
 import bbm.database.sandboxes.Sandbox;
 import bbm.database.sandboxes.Sandboxes;
@@ -15,7 +15,7 @@ import java.util.Optional;
 /**
  * Created by mario on 1/18/17.
  */
-public class MonitorSyncActionImpl implements MonitorSyncAction {
+public class MonitorSyncActionImpl implements HookAction {
 
     private final Branches branches;
     private final Sandboxes sandboxes;
@@ -27,7 +27,7 @@ public class MonitorSyncActionImpl implements MonitorSyncAction {
     }
 
     @Override
-    public ActionResult apply(BranchActionContext context) {
+    public ActionResult apply(HookActionContext context) {
         final String branchName = context.getBranchName();
         Optional<Sandbox> sandboxOptional = sandboxes.getFreeSandbox();
         if(!sandboxOptional.isPresent()) {

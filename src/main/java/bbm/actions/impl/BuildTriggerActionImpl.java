@@ -3,8 +3,8 @@ package bbm.actions.impl;
 import bbm.actions.BuildTriggerAction;
 import bbm.actions.buildtrigger.BuildTrigger;
 import bbm.actions.buildtrigger.Integrators;
-import bbm.actions.context.BuildTriggerActionContext;
 import bbm.actions.context.BuildTriggerContext;
+import bbm.actions.context.HookActionContext;
 import bbm.database.repositories.Repositories;
 import bbm.database.repositories.Repository;
 import com.google.inject.Inject;
@@ -28,10 +28,10 @@ public class BuildTriggerActionImpl implements BuildTriggerAction {
     }
 
     @Override
-    public void execute(BuildTriggerActionContext context) throws Exception {
-        Optional<Repository> repositoryOptional = repositories.getRepository(context.getRepUuid());
+    public void execute(HookActionContext context) throws Exception {
+        Optional<Repository> repositoryOptional = repositories.getRepository(context.getRepoUuid());
         Repository repository = repositoryOptional.
-                orElseThrow(() -> new InvalidParameterException("Repository with uuid: " + context.getRepUuid() + " not found"));
+                orElseThrow(() -> new InvalidParameterException("Repository with uuid: " + context.getRepoUuid() + " not found"));
         switch (repository.getProvider()){
             case BITBUCKET:
                 buildTriggers.get(Integrators.BITBUCKETPIPELINES).apply(getTriggerContext(context.getBranchName(), repository));

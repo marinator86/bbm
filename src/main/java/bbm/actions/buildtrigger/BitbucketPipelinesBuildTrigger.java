@@ -2,6 +2,7 @@ package bbm.actions.buildtrigger;
 
 import bbm.actions.ActionResult;
 import bbm.actions.context.BuildTriggerContext;
+import bbm.actions.context.HookActionContext;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ class BitbucketPipelinesBuildTrigger implements BuildTrigger{
         return new ActionResult() {
             @Override
             public Boolean getSuccess() {
-                return true;
+                return false;
             }
 
             @Override
@@ -30,4 +31,5 @@ class BitbucketPipelinesBuildTrigger implements BuildTrigger{
             }
         };
     }
+
 }

@@ -8,6 +8,7 @@ import bbm.actions.ActionModule;
 import bbm.database.DatabaseModule;
 import bbm.database.sandboxes.SandboxModule;
 import bbm.database.branches.BranchModule;
+import bbm.handlers.hooks.BitbucketWebhookHandler;
 import bbm.salesforce.SalesforceModule;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
@@ -44,7 +45,7 @@ public class Main {
                 b.module(BranchModule.class);
                 b.module(ActionModule.class);
                 b.module(SalesforceModule.class);
-                b.bind(BranchActionHandler.class);
+                b.bind(BitbucketWebhookHandler.class);
                 b.bind(OrgActionHandler.class);
                 b.bind(ActionRenderer.class);
                 b.bind(OptionalOrgRenderer.class);
@@ -64,7 +65,7 @@ public class Main {
                             .path("index.html", ctx -> ctx.render("protected admin"))
                             .path("sync", OrgActionHandler.class);
                     })
-                    .post("hooks", BranchActionHandler.class)
+                    .post("hooks", BitbucketWebhookHandler.class)
                     .path("loginForm.html", ctx ->
                             ctx.render(groovyTemplate(
                                     singletonMap("callbackUrl", formClient.getCallbackUrl()),

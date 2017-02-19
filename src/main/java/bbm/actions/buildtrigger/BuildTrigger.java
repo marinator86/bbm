@@ -2,6 +2,7 @@ package bbm.actions.buildtrigger;
 
 import bbm.actions.ActionResult;
 import bbm.actions.context.BuildTriggerContext;
+import bbm.actions.context.HookActionContext;
 
 import java.util.function.Function;
 
