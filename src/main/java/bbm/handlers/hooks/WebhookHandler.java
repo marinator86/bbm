@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by mario on 2/16/17.
  */
 public abstract class WebhookHandler implements Handler{
-    protected final static Logger logger = LoggerFactory.getLogger(BitbucketWebhookHandler.class);
+    protected final static Logger logger = LoggerFactory.getLogger(WebhookHandler.class);
 
     @Inject
     private Map<HookAction.Types, HookAction> hookActions;
@@ -39,9 +39,7 @@ public abstract class WebhookHandler implements Handler{
         }
 
         HookAction.Types action = getHookActionType(headers);
-        Promise<TypedData> body = request.getBody();
-
-        body.fork().map(typedData -> new JsonParser().parse(typedData.getText()).getAsJsonObject())
+        request.getBody().map(typedData -> new JsonParser().parse(typedData.getText()).getAsJsonObject())
         .onError(throwable -> ctx.error(throwable))
         .onNull(() -> ctx.clientError(400))
         .map(hookActionContextCreator())
