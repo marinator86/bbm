@@ -7,13 +7,15 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by mario on 1/18/17.
  */
 public class DatabaseModule extends AbstractModule {
-    private static final String DATABASE_URI = "mongodb://bbmApp:y7X05DaMNg2PktPGUQm7@ds051655.mlab.com:51655/heroku_9mft2pt9";
-    private static final String DATABASE_NAME = "heroku_9mft2pt9";
+    protected final static Logger logger = LoggerFactory.getLogger(DatabaseModule.class);
+
     private static final String DATABASE_PACKAGE = "database";
 
     @Override
@@ -32,8 +34,9 @@ public class DatabaseModule extends AbstractModule {
         // tell morphia where to find your classes
         // can be called multiple times with different packages or classes
         morphia.mapPackage(DATABASE_PACKAGE);
-
-        final Datastore datastore = morphia.createDatastore(new MongoClient(new MongoClientURI(DATABASE_URI)), DATABASE_NAME);
+        final String mongodb_uri = System.getenv("MONGODB_URI");
+        logger.info(mongodb_uri);
+        final Datastore datastore = morphia.createDatastore(new MongoClient(new MongoClientURI(mongodb_uri)), "heroku_9mft2pt9");
 
         return datastore;
     }}
