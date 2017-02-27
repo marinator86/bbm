@@ -1,7 +1,7 @@
 package bbm.actions.impl;
 
 import bbm.actions.*;
-import bbm.actions.context.BranchActionContext;
+import bbm.actions.context.HookActionContext;
 import bbm.database.branches.Branch;
 import bbm.database.branches.Branches;
 import com.google.common.collect.ImmutableMap;
@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * Created by mario on 1/18/17.
  */
-public class UnmonitorSyncActionImpl implements UnmonitorSyncAction {
+public class UnmonitorSyncActionImpl implements HookAction {
 
     private final Branches branches;
 
@@ -23,7 +23,7 @@ public class UnmonitorSyncActionImpl implements UnmonitorSyncAction {
     }
 
     @Override
-    public ActionResult apply(BranchActionContext context) {
+    public ActionResult apply(HookActionContext context) {
         final String branchName = context.getBranchName();
 
         Optional<Branch> branch = branches.getBranch(branchName);
