@@ -9,6 +9,7 @@ import bbm.database.DatabaseModule;
 import bbm.database.sandboxes.SandboxModule;
 import bbm.database.branches.BranchModule;
 import bbm.handlers.hooks.BitbucketWebhookHandler;
+import bbm.handlers.renderer.RepositoryListRenderer;
 import bbm.salesforce.SalesforceModule;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
@@ -48,6 +49,7 @@ public class Main {
                 b.bind(BitbucketWebhookHandler.class);
                 b.bind(OrgActionHandler.class);
                 b.bind(ActionRenderer.class);
+                b.bind(RepositoryListRenderer.class);
                 b.bind(OptionalOrgRenderer.class);
                 b.bind(InstructionActionHandler.class);
             }))
@@ -67,11 +69,14 @@ public class Main {
                     })
                     .post("hooks", BitbucketWebhookHandler.class)
                     .path("loginForm.html", ctx ->
-                            ctx.render(groovyTemplate(
-                                    singletonMap("callbackUrl", formClient.getCallbackUrl()),
-                                    "loginForm.html"
-                            ))
-                        )
+                        ctx.render(groovyTemplate(
+                                singletonMap("callbackUrl", formClient.getCallbackUrl()),
+                                "loginForm.html"
+                        ))
+                    )
+                    .prefix("repositories", repoChain -> {
+                        repoChain.get(GetRepositoriesHandler.class);
+                    })
                     .files(f -> f.dir("public"));
             })
         );
