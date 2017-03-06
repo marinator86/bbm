@@ -3,6 +3,7 @@ package bbm.database.repositories;
 import com.google.inject.Inject;
 import org.mongodb.morphia.Datastore;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,6 +20,11 @@ public class RepositoriesImpl implements Repositories {
     @Override
     public Optional<Repository> getRepository(String uuid) {
         return Optional.ofNullable(datastore.find(Repository.class).field("uuid").equal(uuid).get());
+    }
+
+    @Override
+    public List<Repository> getRepositories() {
+        return datastore.find(Repository.class).asList();
     }
 
     @Override
