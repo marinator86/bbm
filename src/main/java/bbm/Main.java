@@ -54,6 +54,7 @@ public class Main {
                 b.bind(RepositoryRenderer.class);
                 b.bind(OptionalOrgRenderer.class);
                 b.bind(InstructionActionHandler.class);
+                b.bind(ErrorHandler.class);
             }))
 
             .handlers(chain -> {
