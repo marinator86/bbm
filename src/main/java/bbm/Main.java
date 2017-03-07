@@ -10,6 +10,7 @@ import bbm.database.sandboxes.SandboxModule;
 import bbm.database.branches.BranchModule;
 import bbm.handlers.hooks.BitbucketWebhookHandler;
 import bbm.handlers.renderer.RepositoryListRenderer;
+import bbm.handlers.renderer.RepositoryRenderer;
 import bbm.salesforce.SalesforceModule;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
@@ -50,9 +51,11 @@ public class Main {
                 b.bind(OrgActionHandler.class);
                 b.bind(ActionRenderer.class);
                 b.bind(RepositoryListRenderer.class);
+                b.bind(RepositoryRenderer.class);
                 b.bind(OptionalOrgRenderer.class);
                 b.bind(InstructionActionHandler.class);
                 b.bind(GetRepositoriesHandler.class);
+                b.bind(ErrorHandler.class);
             }))
 
             .handlers(chain -> {
@@ -77,6 +80,7 @@ public class Main {
                     )
                     .prefix("repositories", repoChain -> {
                         repoChain.get(GetRepositoriesHandler.class);
+                        repoChain.post(":uuid", PostRepositoryHandler.class);
                     })
                     .files(f -> f.dir("public"));
             })
