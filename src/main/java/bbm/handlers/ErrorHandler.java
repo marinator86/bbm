@@ -1,6 +1,9 @@
 package bbm.handlers;
 
 import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ratpack.error.ClientErrorHandler;
 import ratpack.handling.Context;
 import ratpack.http.Response;
 
@@ -8,13 +11,16 @@ import ratpack.http.Response;
  * Created by mario on 3/7/17.
  */
 public class ErrorHandler implements ratpack.error.internal.ErrorHandler {
+    private final static Logger logger = LoggerFactory.getLogger(ErrorHandler.class);
+
     @Override
     public void error(Context context, int statusCode) throws Exception {
         JsonObject object = new JsonObject();
         object.addProperty("success", false);
         Response resp = context.getResponse();
         resp.status(statusCode);
-        resp.send(object.getAsString());
+        logger.info("Retrieved error: " + statusCode);
+        resp.send(object.toString());
     }
 
     @Override
@@ -23,6 +29,9 @@ public class ErrorHandler implements ratpack.error.internal.ErrorHandler {
         object.addProperty("success", false);
         object.addProperty("message", throwable.getMessage());
         Response resp = context.getResponse();
-        resp.send(object.getAsString());
+        resp.status(500);
+        logger.info("Retrieved error");
+        logger.info(throwable.getMessage());
+        resp.send(object.toString());
     }
 }
