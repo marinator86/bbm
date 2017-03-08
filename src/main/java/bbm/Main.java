@@ -55,6 +55,7 @@ public class Main {
                 b.bind(OptionalOrgRenderer.class);
                 b.bind(InstructionActionHandler.class);
                 b.bind(GetRepositoriesHandler.class);
+                b.bind(PostRepositoryHandler.class);
                 b.bind(ErrorHandler.class);
             }))
 
