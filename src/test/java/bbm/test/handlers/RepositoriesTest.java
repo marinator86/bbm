@@ -2,6 +2,7 @@ package bbm.test.handlers;
 
 import bbm.database.repositories.Repositories;
 import bbm.database.repositories.RepositoryModule;
+import bbm.handlers.DeleteRepositoryHandler;
 import bbm.handlers.GetRepositoriesHandler;
 import bbm.handlers.PostRepositoryHandler;
 import bbm.handlers.renderer.RepositoryListRenderer;
@@ -95,4 +96,32 @@ public class RepositoriesTest {
 
     }
 
+    @Test
+    public void testDeleteRepositories() throws Exception {
+        Injector injector = com.google.inject.Guice.createInjector(
+                new DatabaseModule(),
+                new RepositoryModule()
+        );
+
+        Repositories repos = injector.getInstance(Repositories.class);
+        repos.createRepository("test1", "123456a", Repositories.Provider.BITBUCKET);
+
+        EmbeddedApp.of(ratpackServerSpec -> {
+            ratpackServerSpec.registry(Guice.registry(b -> {
+                b.bindInstance(Repositories.class, repos);
+                b.bind(DeleteRepositoryHandler.class);
+            }));
+
+            ratpackServerSpec.handlers(chain -> {
+                chain.delete("repositories/:uuid", DeleteRepositoryHandler.class);
+            });
+        }).test(testHttpClient -> {
+            ReceivedResponse res = testHttpClient.delete("repositories/123456b");
+            Assert.assertEquals(404, res.getStatusCode());
+
+            res = testHttpClient.delete("repositories/123456a");
+            Assert.assertEquals(200, res.getStatusCode());
+        });
+
+    }
 }

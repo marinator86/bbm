@@ -82,6 +82,7 @@ public class Main {
                     .prefix("repositories", repoChain -> {
                         repoChain.get(GetRepositoriesHandler.class);
                         repoChain.post(":uuid", PostRepositoryHandler.class);
+                        repoChain.delete(":uuid", DeleteRepositoryHandler.class);
                     })
                     .files(f -> f.dir("public"));
             })
