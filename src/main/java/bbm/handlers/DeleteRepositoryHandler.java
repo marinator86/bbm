@@ -36,6 +36,6 @@ public class DeleteRepositoryHandler implements Handler {
             return uuid;
         })
         .onError(throwable -> ctx.error(throwable))
-        .then(uuid -> ctx.next());
+        .then(uuid -> ctx.getResponse().status(200).send());
     }
 }

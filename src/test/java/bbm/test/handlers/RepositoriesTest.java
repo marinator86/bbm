@@ -105,6 +105,7 @@ public class RepositoriesTest {
 
         Repositories repos = injector.getInstance(Repositories.class);
         repos.createRepository("test1", "123456a", Repositories.Provider.BITBUCKET);
+        Assert.assertTrue(repos.getRepository("123456a").isPresent());
 
         EmbeddedApp.of(ratpackServerSpec -> {
             ratpackServerSpec.registry(Guice.registry(b -> {
