@@ -46,3 +46,10 @@ task stage {
 task listJars << {
     configurations.compile.each { File file -> println file.name }
 }
+
+task execute(type:JavaExec) {
+    standardInput = System.in
+    main = project.hasProperty('mainClass') ? project.property('mainClass') : ''// needs param when executed. cmd: gradle -PmainClass=migration.Boo -PmongoUri=mongodb://he... execute
+    environment "MONGODB_URI", project.hasProperty('mongoUri') ? project.property('mongoUri') : ''
+    classpath = sourceSets.main.runtimeClasspath
+}
