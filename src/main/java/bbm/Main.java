@@ -72,7 +72,9 @@ public class Main {
                             .path("index.html", ctx -> ctx.render("protected admin"))
                             .path("sync", OrgActionHandler.class);
                     })
-                    .post("hooks", BitbucketWebhookHandler.class)
+                    .prefix("hooks", hookChain -> {
+                        hookChain.post("bitbucket", BitbucketWebhookHandler.class);
+                    })
                     .path("loginForm.html", ctx ->
                         ctx.render(groovyTemplate(
                                 singletonMap("callbackUrl", formClient.getCallbackUrl()),

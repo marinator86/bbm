@@ -11,6 +11,7 @@ import bbm.database.branches.Branches;
 import bbm.database.orgs.Org;
 import bbm.database.orgs.OrgModule;
 import bbm.database.orgs.Orgs;
+import bbm.database.repositories.Repositories;
 import bbm.database.repositories.Repository;
 import bbm.database.repositories.RepositoryModule;
 import bbm.database.sandboxes.SandboxModule;
@@ -44,6 +45,7 @@ public class SandboxAllocationTest {
         Injector injector = Guice.createInjector(
                 new DatabaseModule(),
                 new OrgModule(),
+                new RepositoryModule(),
                 new BranchModule(),
                 new SandboxModule(),
                 new AbstractModule() {
@@ -67,13 +69,16 @@ public class SandboxAllocationTest {
         Sandboxes sandboxes = injector.getInstance(Sandboxes.class);
         sandboxes.createSandbox("org1", "adssd", testOrg);
         sandboxes.createSandbox("org2", "adsse", testOrg);
-        //sandboxes.createSandbox("org3", "adssf", testOrg);
+
+        Repositories repositories = injector.getInstance(Repositories.class);
+        repositories.createRepository("testRepo", "123", Repositories.Provider.BITBUCKET);
+        Repository repo = repositories.getRepository("123").get();
 
         Branches branches = injector.getInstance(Branches.class);
-        branches.createManagedBranch("branch1");
-        sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch1").get());
-        branches.createManagedBranch("branch2");
-        sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch2").get());
+        branches.createManagedBranch("branch1", repo);
+        sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch1", repo).get());
+        branches.createManagedBranch("branch2", repo);
+        sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch2", repo).get());
 
         InstructionAction credAction = injector.getInstance(InstructionAction.class);
         ActionResult result1 = credAction.apply(getInstructionActionContext("branch1"));
@@ -86,7 +91,7 @@ public class SandboxAllocationTest {
         ActionResult result3 = unmonitorAction.apply(new HookActionContext() {
             @Override
             public String getRepoUuid() {
-                return null;
+                return "123";
             }
 
             @Override
@@ -101,8 +106,8 @@ public class SandboxAllocationTest {
         Assert.assertEquals(true, result4.getSuccess());
         Assert.assertEquals(true, sandboxes.getFreeSandbox().isPresent());
 
-        branches.createManagedBranch("branch3");
-        sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch3").get());
+        branches.createManagedBranch("branch3", repo);
+        sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch3", repo).get());
 
         ActionResult result5 = credAction.apply(getInstructionActionContext("branch3"));
         Assert.assertEquals(true, result5.getSuccess());

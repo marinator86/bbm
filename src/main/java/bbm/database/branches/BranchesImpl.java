@@ -1,5 +1,6 @@
 package bbm.database.branches;
 
+import bbm.database.repositories.Repository;
 import com.google.inject.Inject;
 import org.mongodb.morphia.Datastore;
 
@@ -22,23 +23,26 @@ class BranchesImpl implements Branches{
      * @param name the branch Name
      */
     @Override
-    public void createManagedBranch(String name) {
-        Optional<Branch> branchOptional = getBranch(name);
-        if(branchOptional.isPresent()){
-            Branch branch = branchOptional.get();
-            branch.setManaged(true);
-            datastore.save(branch);
-            return;
+    public void createManagedBranch(String name, Repository repository) {
+        Optional<Branch> branchOptional = getBranch(name, repository);
+        Branch branch;
+        if(!branchOptional.isPresent()){
+            branch = new Branch();
+            branch.setName(name);
+            branch.setRepository(repository);
+        } else {
+            branch = branchOptional.get();
         }
-        Branch branch = new Branch();
-        branch.setName(name);
         branch.setManaged(true);
         datastore.save(branch);
     }
 
     @Override
-    public Optional<Branch> getBranch(String name) {
-        Branch branch = datastore.find(Branch.class).field("name").equal(name).get();
+    public Optional<Branch> getBranch(String name, Repository repository) {
+        Branch branch = datastore.find(Branch.class)
+                .field("name").equal(name)
+                .field("repository").equal(repository)
+                .get();
         return branch == null ? Optional.empty() : Optional.of(branch);
     }
 

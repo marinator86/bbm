@@ -6,6 +6,8 @@ import bbm.actions.context.InstructionActionContext;
 import bbm.database.branches.Branch;
 import bbm.database.branches.Branches;
 import bbm.database.orgs.Orgs;
+import bbm.database.repositories.Repositories;
+import bbm.database.repositories.Repository;
 import bbm.database.sandboxes.Sandbox;
 import bbm.database.sandboxes.Sandboxes;
 import com.google.common.collect.ImmutableMap;
@@ -21,16 +23,27 @@ public class InstructionActionImpl implements InstructionAction{
 
     private final Branches branches;
     private final Sandboxes sandboxes;
+    private final Repositories repositories;
 
     @Inject
-    public InstructionActionImpl(Branches branches, Sandboxes sandboxes){
+    public InstructionActionImpl(Branches branches, Sandboxes sandboxes, Repositories repositories){
         this.branches = branches;
         this.sandboxes = sandboxes;
+        this.repositories = repositories;
     }
 
     @Override
     public ActionResult apply(InstructionActionContext instructionActionContext) {
-        Optional<Branch> branchOptional = branches.getBranch(instructionActionContext.getBranchName());
+        Optional<Repository> repositoryOptional = repositories.getRepository(instructionActionContext.getRepositoryUID());
+        if(!repositoryOptional.isPresent()){
+            return getActionResult(false, ImmutableMap.of(
+                    "msg", "repository " + instructionActionContext.getRepositoryUID() + " not found",
+                    "sandbox", "",
+                    "buildType", "NOBUILD"));
+        }
+
+        Repository repository = repositoryOptional.get();
+        Optional<Branch> branchOptional = branches.getBranch(instructionActionContext.getBranchName(), repository);
         if(!branchOptional.isPresent() || !branchOptional.get().getManaged())
             return getActionResult(true, ImmutableMap.of(
                     "msg", "branchNotManaged",
