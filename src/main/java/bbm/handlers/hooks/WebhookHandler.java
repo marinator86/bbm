@@ -49,7 +49,7 @@ public abstract class WebhookHandler implements Handler{
         .route(actionResult -> !actionResult.right().getSuccess(), pair -> logger.error("Error in webhook handling. Skipping build trigger."))
         .map(resultPair -> resultPair.left())
         .next(actionContext -> logger.info("Executing build trigger: " + actionContext.getBranchName() + ", repo: " + actionContext.getRepoUuid()))
-        .next(ctx.get(BuildTriggerAction.class))
+        .route(actionContext -> HookAction.Types.MONITOR.equals(action), ctx.get(BuildTriggerAction.class))
         .onError(throwable -> logger.error("Error during build trigger execution: ", throwable))
         .then(Action.noop());
     }
