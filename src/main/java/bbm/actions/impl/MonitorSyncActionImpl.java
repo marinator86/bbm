@@ -3,7 +3,10 @@ package bbm.actions.impl;
 import bbm.actions.ActionResult;
 import bbm.actions.HookAction;
 import bbm.actions.context.HookActionContext;
+import bbm.database.branches.Branch;
 import bbm.database.branches.Branches;
+import bbm.database.repositories.Repositories;
+import bbm.database.repositories.Repository;
 import bbm.database.sandboxes.Sandbox;
 import bbm.database.sandboxes.Sandboxes;
 import com.google.common.collect.ImmutableMap;
@@ -19,11 +22,13 @@ public class MonitorSyncActionImpl implements HookAction {
 
     private final Branches branches;
     private final Sandboxes sandboxes;
+    private final Repositories repositories;
 
     @Inject
-    public MonitorSyncActionImpl(Branches branches, Sandboxes sandboxes) {
+    public MonitorSyncActionImpl(Branches branches, Sandboxes sandboxes, Repositories repositories) {
         this.branches = branches;
         this.sandboxes = sandboxes;
+        this.repositories = repositories;
     }
 
     @Override
@@ -31,15 +36,22 @@ public class MonitorSyncActionImpl implements HookAction {
         final String branchName = context.getBranchName();
         Optional<Sandbox> sandboxOptional = sandboxes.getFreeSandbox();
         if(!sandboxOptional.isPresent()) {
-
             return getActionResult(false, ImmutableMap.of(
-                    "msg", "No free Sandbox!"
+                "msg", "No free Sandbox!"
             ));
         }
-        branches.createManagedBranch(branchName);
-        sandboxes.setBranch(sandboxOptional.get(), branches.getBranch(branchName).get());
+        Optional<Repository> repositoryOptional = repositories.getRepository(context.getRepoUuid());
+        if(!repositoryOptional.isPresent()){
+            return getActionResult(false, ImmutableMap.of(
+                "msg", "Repository " + context.getRepoUuid() + " not found!"
+            ));
+        }
+        Repository repo = repositoryOptional.get();
+        branches.createManagedBranch(branchName, repositoryOptional.get());
+        Branch branch = branches.getBranch(branchName, repo).get();
+        sandboxes.setBranch(sandboxOptional.get(), branch);
         return getActionResult(true, ImmutableMap.of(
-                "success", "true"
+                "branch", branchName
         ));
     }
 
