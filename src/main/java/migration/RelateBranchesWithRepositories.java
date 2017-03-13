@@ -24,6 +24,7 @@ import java.util.Scanner;
 public class RelateBranchesWithRepositories {
     private final static Logger logger = LoggerFactory.getLogger(RelateBranchesWithRepositories.class);
 
+    @Deprecated
     public static void main(String[] args) {
         Injector injector = com.google.inject.Guice.createInjector(
                 new DatabaseModule(),
@@ -75,8 +76,8 @@ public class RelateBranchesWithRepositories {
                 logger.info("Reassign to repo? ({})", repo.getRepo_slug());
                 reassign = "y".equals(in.nextLine());
             }
-            if(reassign)
-                branch.setRepository(repo);
+            //if(reassign)
+            //    branch.setRepository(repo);
         }
 
         if(!dryRun){

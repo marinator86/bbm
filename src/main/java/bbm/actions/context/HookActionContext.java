@@ -8,4 +8,5 @@ import bbm.database.repositories.Repository;
 public interface HookActionContext {
     String getRepoUuid();
     String getBranchName();
+    String getHookCommit();
 }
