@@ -56,6 +56,7 @@ public class Main {
                 b.bind(InstructionActionHandler.class);
                 b.bind(GetRepositoriesHandler.class);
                 b.bind(PostRepositoryHandler.class);
+                b.bind(DeleteRepositoryHandler.class);
                 b.bind(ErrorHandler.class);
             }))
 
