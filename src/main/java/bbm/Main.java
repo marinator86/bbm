@@ -56,6 +56,7 @@ public class Main {
                 b.bind(InstructionActionHandler.class);
                 b.bind(GetRepositoriesHandler.class);
                 b.bind(PostRepositoryHandler.class);
+                b.bind(DeleteRepositoryHandler.class);
                 b.bind(ErrorHandler.class);
             }))
 
@@ -72,7 +73,9 @@ public class Main {
                             .path("index.html", ctx -> ctx.render("protected admin"))
                             .path("sync", OrgActionHandler.class);
                     })
-                    .post("hooks", BitbucketWebhookHandler.class)
+                    .prefix("hooks", hookChain -> {
+                        hookChain.post("bitbucket", BitbucketWebhookHandler.class);
+                    })
                     .path("loginForm.html", ctx ->
                         ctx.render(groovyTemplate(
                                 singletonMap("callbackUrl", formClient.getCallbackUrl()),
@@ -82,6 +85,7 @@ public class Main {
                     .prefix("repositories", repoChain -> {
                         repoChain.get(GetRepositoriesHandler.class);
                         repoChain.post(":uuid", PostRepositoryHandler.class);
+                        repoChain.delete(":uuid", DeleteRepositoryHandler.class);
                     })
                     .files(f -> f.dir("public"));
             })
