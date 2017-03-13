@@ -1,8 +1,10 @@
 package bbm.database.branches;
 
+import bbm.database.repositories.Repository;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Reference;
 
 /**
  * Created by mario on 1/19/17.
@@ -13,11 +15,19 @@ public final class Branch {
     private ObjectId id;
     private String name;
     private Boolean managed;
+    @Reference
+    private Repository repository;
 
     protected Branch(){
 
     }
 
+    public Repository getRepository() {
+        return repository;
+    }
+    public void setRepository(Repository repository) {
+        this.repository = repository;
+    }
     public Boolean getManaged() {
         return managed;
     }

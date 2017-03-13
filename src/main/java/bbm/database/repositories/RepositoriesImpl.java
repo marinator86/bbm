@@ -1,5 +1,6 @@
 package bbm.database.repositories;
 
+import bbm.database.branches.Branch;
 import com.google.inject.Inject;
 import org.mongodb.morphia.Datastore;
 
@@ -44,5 +45,22 @@ public class RepositoriesImpl implements Repositories {
         repository.setAccessToken(newAccessToken);
         repository.setRefreshToken(newRefreshToken);
         datastore.save(repository);
+    }
+
+    @Override
+    public void deleteRepository(String uuid) throws IllegalStateException {
+        Optional<Repository> repository = getRepository(uuid);
+        if(!repository.isPresent())
+            throw new IllegalStateException("specified repository does not exist");
+
+        Boolean hasManagedBranches = datastore.find(Branch.class)
+                .field("repository").equal(repository.get())
+                .field("managed").equal(true)
+                .countAll()
+                > 0;
+        if(hasManagedBranches)
+            throw new IllegalStateException("specified repository can't be deleted because it has managed branches");
+
+        datastore.delete(repository.get());
     }
 }
