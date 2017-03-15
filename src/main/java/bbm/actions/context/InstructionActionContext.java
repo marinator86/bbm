@@ -6,4 +6,5 @@ package bbm.actions.context;
 public interface InstructionActionContext extends ActionContext{
     String getRepositoryUID();
     String getBranchName();
+    String getCurrentCommit();
 }
