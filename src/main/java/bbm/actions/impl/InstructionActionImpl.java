@@ -5,7 +5,6 @@ import bbm.actions.InstructionAction;
 import bbm.actions.context.InstructionActionContext;
 import bbm.database.branches.Branch;
 import bbm.database.branches.Branches;
-import bbm.database.orgs.Orgs;
 import bbm.database.repositories.Repositories;
 import bbm.database.repositories.Repository;
 import bbm.database.sandboxes.Sandbox;
@@ -56,9 +55,16 @@ public class InstructionActionImpl implements InstructionAction{
                     "msg", "sandboxNotFound",
                     "sandbox", "",
                     "buildType", "NOBUILD"));
+
+        Boolean isInitialCommit = org.apache.commons.lang3.StringUtils.startsWith(
+                branch.getInitialCommit(),
+                instructionActionContext.getCurrentCommit());
+
+        Boolean noCommitSupplied = instructionActionContext.getCurrentCommit() == null;
+
         return getActionResult(true, ImmutableMap.of(
                 "sandbox", usedSandboxOptional.get().getName(),
-                "buildType", "CLEANDEPLOY"));
+                "buildType", isInitialCommit || noCommitSupplied ? "CLEANDEPLOY" : "DEPLOY"));
     }
 
     private ActionResult getActionResult(Boolean success, Map<String, String> payload) {

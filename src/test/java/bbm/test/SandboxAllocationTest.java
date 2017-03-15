@@ -138,6 +138,11 @@ public class SandboxAllocationTest {
             public String getBranchName() {
                 return branch;
             }
+
+            @Override
+            public String getCurrentCommit() {
+                return "0";
+            }
         };
     }
 }
