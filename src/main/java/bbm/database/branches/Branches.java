@@ -8,8 +8,8 @@ import java.util.Optional;
  * Created by mario on 1/19/17.
  */
 public interface Branches {
-    void createManagedBranch(String name, Repository repository);
+    void createManagedBranch(String name, Repository repository, String initialCommit);
     Optional<Branch> getBranch(String name, Repository repository);
-    void setManaged(Branch branch);
+    void setManaged(Branch branch, String initialCommit);
     void setUnmanaged(Branch branch);
 }

@@ -14,6 +14,7 @@ public final class Branch {
     @Id
     private ObjectId id;
     private String name;
+    private String initialCommit;
     private Boolean managed;
     @Reference
     private Repository repository;
@@ -25,7 +26,7 @@ public final class Branch {
     public Repository getRepository() {
         return repository;
     }
-    public void setRepository(Repository repository) {
+    protected void setRepository(Repository repository) {
         this.repository = repository;
     }
     public Boolean getManaged() {
@@ -42,6 +43,12 @@ public final class Branch {
     }
     public String getName() {
         return name;
+    }
+    public String getInitialCommit() {
+        return initialCommit;
+    }
+    protected void setInitialCommit(String initialCommit) {
+        this.initialCommit = initialCommit;
     }
     protected void setName(String name) {
         this.name = name;

@@ -63,6 +63,11 @@ public class BuildTriggerActionTest {
                 public String getBranchName() {
                     return "testBranchName";
                 }
+
+                @Override
+                public String getHookCommit() {
+                    return "a01";
+                }
             };
         }
     }

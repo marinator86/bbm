@@ -47,7 +47,7 @@ public class MonitorSyncActionImpl implements HookAction {
             ));
         }
         Repository repo = repositoryOptional.get();
-        branches.createManagedBranch(branchName, repositoryOptional.get());
+        branches.createManagedBranch(branchName, repositoryOptional.get(), context.getHookCommit());
         Branch branch = branches.getBranch(branchName, repo).get();
         sandboxes.setBranch(sandboxOptional.get(), branch);
         return getActionResult(true, ImmutableMap.of(
