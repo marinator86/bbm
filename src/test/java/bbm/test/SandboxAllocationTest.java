@@ -75,9 +75,9 @@ public class SandboxAllocationTest {
         Repository repo = repositories.getRepository("123").get();
 
         Branches branches = injector.getInstance(Branches.class);
-        branches.createManagedBranch("branch1", repo);
+        branches.createManagedBranch("branch1", repo, "a01");
         sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch1", repo).get());
-        branches.createManagedBranch("branch2", repo);
+        branches.createManagedBranch("branch2", repo, "a01");
         sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch2", repo).get());
 
         InstructionAction credAction = injector.getInstance(InstructionAction.class);
@@ -98,6 +98,11 @@ public class SandboxAllocationTest {
             public String getBranchName() {
                 return "branch1";
             }
+
+            @Override
+            public String getHookCommit() {
+                return "a01";
+            }
         });
         Assert.assertEquals(true, result3.getSuccess());
         Assert.assertEquals(true, sandboxes.getFreeSandbox().isPresent());
@@ -106,7 +111,7 @@ public class SandboxAllocationTest {
         Assert.assertEquals(true, result4.getSuccess());
         Assert.assertEquals(true, sandboxes.getFreeSandbox().isPresent());
 
-        branches.createManagedBranch("branch3", repo);
+        branches.createManagedBranch("branch3", repo, "a01");
         sandboxes.setBranch(sandboxes.getFreeSandbox().get(), branches.getBranch("branch3", repo).get());
 
         ActionResult result5 = credAction.apply(getInstructionActionContext("branch3"));
@@ -132,6 +137,11 @@ public class SandboxAllocationTest {
             @Override
             public String getBranchName() {
                 return branch;
+            }
+
+            @Override
+            public String getCurrentCommit() {
+                return "0";
             }
         };
     }

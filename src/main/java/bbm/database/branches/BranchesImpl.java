@@ -23,7 +23,7 @@ class BranchesImpl implements Branches{
      * @param name the branch Name
      */
     @Override
-    public void createManagedBranch(String name, Repository repository) {
+    public void createManagedBranch(String name, Repository repository, String initialCommit) {
         Optional<Branch> branchOptional = getBranch(name, repository);
         Branch branch;
         if(!branchOptional.isPresent()){
@@ -34,6 +34,7 @@ class BranchesImpl implements Branches{
             branch = branchOptional.get();
         }
         branch.setManaged(true);
+        branch.setInitialCommit(initialCommit);
         datastore.save(branch);
     }
 
@@ -47,17 +48,16 @@ class BranchesImpl implements Branches{
     }
 
     @Override
-    public void setManaged(Branch branch) {
-        setManaged(branch, true);
+    public void setManaged(Branch branch, String initialCommit) {
+        branch.setManaged(true);
+        branch.setInitialCommit(initialCommit);
+        datastore.save(branch);
     }
 
     @Override
     public void setUnmanaged(Branch branch) {
-        setManaged(branch, false);
-    }
-
-    private void setManaged(Branch branch, Boolean value){
-        branch.setManaged(value);
+        branch.setManaged(false);
         datastore.save(branch);
     }
+
 }

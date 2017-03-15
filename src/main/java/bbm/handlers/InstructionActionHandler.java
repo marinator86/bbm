@@ -3,8 +3,12 @@ package bbm.handlers;
 import bbm.actions.ActionResult;
 import bbm.actions.InstructionAction;
 import bbm.actions.context.InstructionActionContext;
+import ratpack.exec.Blocking;
+import ratpack.exec.Promise;
+import ratpack.func.Function;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
+import ratpack.path.PathTokens;
 
 /**
  * Created by mario on 1/27/17.
@@ -13,10 +17,12 @@ public class InstructionActionHandler implements Handler {
 
     @Override
     public void handle(Context ctx) throws Exception {
-        String repositoryUID = ctx.getAllPathTokens().get("repositoryUID");
-        String branchName = ctx.getAllPathTokens().get("branchName");
+        PathTokens allPathTokens = ctx.getAllPathTokens();
+        String repositoryUID = allPathTokens.get("repositoryUID");
+        String branchName = allPathTokens.get("branchName");
+        String currentCommit = allPathTokens.get("commit");
 
-        ActionResult result = ctx.get(InstructionAction.class).apply(new InstructionActionContext() {
+        Promise.sync(() -> new InstructionActionContext() {
             @Override
             public String getRepositoryUID() {
                 return repositoryUID;
@@ -26,8 +32,13 @@ public class InstructionActionHandler implements Handler {
             public String getBranchName() {
                 return branchName;
             }
-        });
 
-        ctx.render(result);
+            @Override
+            public String getCurrentCommit() {
+                return currentCommit;
+            }
+        })
+        .map(Function.from(ctx.get(InstructionAction.class)))
+        .then(actionResult -> ctx.render(actionResult));
     }
 }

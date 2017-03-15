@@ -66,7 +66,7 @@ public class Main {
                     .all(RatpackPac4j.authenticator("callback", formClient))
 
                     .get(ctx -> ctx.render(groovyTemplate("index.html")))
-                    .get("instruct/:repositoryUID/:branchName", InstructionActionHandler.class)
+                    .get("instruct/:repositoryUID/:branchName/:commit?", InstructionActionHandler.class)
                     .prefix("admin", protectedchain -> {
                         protectedchain
                             .all(RatpackPac4j.requireAuth(FormClient.class))

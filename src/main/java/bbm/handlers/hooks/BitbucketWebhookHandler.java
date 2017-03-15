@@ -15,9 +15,9 @@ import java.util.Map;
  * Created by mario on 1/18/17.
  */
 public class BitbucketWebhookHandler extends WebhookHandler {
-    protected final static Logger logger = LoggerFactory.getLogger(BitbucketWebhookHandler.class);
+    public static final String HEADER_EVENT_KEY = "X-Event-Key";
 
-    private static final String HEADER_EVENT_KEY = "X-Event-Key";
+    protected final static Logger logger = LoggerFactory.getLogger(BitbucketWebhookHandler.class);
 
     private final static Map<String, HookAction.Types> actionMap = ImmutableMap.of(
             "pullrequest:created", HookAction.Types.MONITOR,
@@ -56,6 +56,14 @@ public class BitbucketWebhookHandler extends WebhookHandler {
                         .getAsJsonObject("source")
                         .getAsJsonObject("branch")
                         .get("name").getAsString();
+            }
+
+            @Override
+            public String getHookCommit() {
+                return jsonObject.getAsJsonObject("pullrequest")
+                        .getAsJsonObject("source")
+                        .getAsJsonObject("commit")
+                        .get("hash").getAsString();
             }
         };
     }
