@@ -56,9 +56,13 @@ public class InstructionActionImpl implements InstructionAction{
                     "sandbox", "",
                     "buildType", "NOBUILD"));
 
+
         Boolean isInitialCommit = org.apache.commons.lang3.StringUtils.startsWith(
                 branch.getInitialCommit(),
-                instructionActionContext.getCurrentCommit());
+                instructionActionContext.getCurrentCommit()) ||
+            org.apache.commons.lang3.StringUtils.startsWith(
+                instructionActionContext.getCurrentCommit(),
+                branch.getInitialCommit());
 
         Boolean noCommitSupplied = instructionActionContext.getCurrentCommit() == null;
 
