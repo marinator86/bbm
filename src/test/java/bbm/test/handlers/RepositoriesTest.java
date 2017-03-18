@@ -1,10 +1,16 @@
 package bbm.test.handlers;
 
+import bbm.database.branches.Branch;
+import bbm.database.branches.BranchModule;
+import bbm.database.branches.Branches;
 import bbm.database.repositories.Repositories;
+import bbm.database.repositories.Repository;
 import bbm.database.repositories.RepositoryModule;
 import bbm.handlers.DeleteRepositoryHandler;
 import bbm.handlers.GetRepositoriesHandler;
+import bbm.handlers.GetRepositoryBranchesHandler;
 import bbm.handlers.PostRepositoryHandler;
+import bbm.handlers.renderer.BranchesListRenderer;
 import bbm.handlers.renderer.RepositoryListRenderer;
 import bbm.handlers.renderer.RepositoryRenderer;
 import bbm.test.DatabaseModule;
@@ -122,6 +128,49 @@ public class RepositoriesTest {
 
             res = testHttpClient.delete("repositories/123456a");
             Assert.assertEquals(200, res.getStatusCode());
+        });
+
+    }
+
+    @Test
+    public void testGetRepositoryBranches() throws Exception {
+        Injector injector = com.google.inject.Guice.createInjector(
+                new DatabaseModule(),
+                new BranchModule(),
+                new RepositoryModule()
+        );
+
+        Repositories repos = injector.getInstance(Repositories.class);
+        repos.createRepository("test1", "123456a", Repositories.Provider.BITBUCKET);
+        Repository repo = repos.getRepository("123456a").get();
+
+        Branches branches = injector.getInstance(Branches.class);
+        branches.createManagedBranch("testBranch1", repo, "a0b");
+        branches.createManagedBranch("testBranch2", repo, "a0b");
+
+        EmbeddedApp.of(ratpackServerSpec -> {
+            ratpackServerSpec.registry(Guice.registry(b -> {
+                b.bindInstance(Repositories.class, repos);
+                b.bindInstance(Branches.class, branches);
+                b.bind(GetRepositoryBranchesHandler.class);
+                b.bind(BranchesListRenderer.class);
+            }));
+
+            ratpackServerSpec.handlers(chain -> {
+                chain.prefix("repositories", repositories ->
+                    repositories.prefix(":uuid", repository ->
+                        repository.get("branches", GetRepositoryBranchesHandler.class)));
+            });
+        }).test(testHttpClient -> {
+            ReceivedResponse res = testHttpClient.get("repositories/123456ab/branches");
+            Assert.assertEquals(404, res.getStatusCode());
+
+            res = testHttpClient.get("repositories/123456a/branches");
+            Assert.assertEquals(200, res.getStatusCode());
+            JsonArray result = new JsonParser().parse(res.getBody().getText()).getAsJsonArray();
+            Assert.assertEquals(2, result.size());
+            Assert.assertEquals("testBranch1", result.get(0).getAsJsonObject().get("name").getAsString());
+            Assert.assertEquals("testBranch2", result.get(1).getAsJsonObject().get("name").getAsString());
         });
 
     }
