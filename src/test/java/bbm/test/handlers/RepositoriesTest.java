@@ -1,6 +1,5 @@
 package bbm.test.handlers;
 
-import bbm.database.branches.Branch;
 import bbm.database.branches.BranchModule;
 import bbm.database.branches.Branches;
 import bbm.database.repositories.Repositories;
