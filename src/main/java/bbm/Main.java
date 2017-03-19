@@ -14,7 +14,6 @@ import bbm.handlers.renderer.RepositoryListRenderer;
 import bbm.handlers.renderer.RepositoryRenderer;
 import bbm.salesforce.SalesforceModule;
 import org.pac4j.http.client.direct.DirectBasicAuthClient;
-import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,6 @@ import ratpack.guice.Guice;
 import ratpack.session.SessionModule;
 
 import static ratpack.groovy.Groovy.groovyTemplate;
-import static java.util.Collections.singletonMap;
 
 public class Main {
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
