@@ -2,6 +2,7 @@ package bbm.database.branches;
 
 import bbm.database.repositories.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -10,6 +11,7 @@ import java.util.Optional;
 public interface Branches {
     void createManagedBranch(String name, Repository repository, String initialCommit);
     Optional<Branch> getBranch(String name, Repository repository);
+    List<Branch> getBranches(Repository repository);
     void setManaged(Branch branch, String initialCommit);
     void setUnmanaged(Branch branch);
 }
