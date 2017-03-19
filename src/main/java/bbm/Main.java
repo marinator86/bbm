@@ -9,6 +9,7 @@ import bbm.database.DatabaseModule;
 import bbm.database.sandboxes.SandboxModule;
 import bbm.database.branches.BranchModule;
 import bbm.handlers.hooks.BitbucketWebhookHandler;
+import bbm.handlers.renderer.BranchesListRenderer;
 import bbm.handlers.renderer.RepositoryListRenderer;
 import bbm.handlers.renderer.RepositoryRenderer;
 import bbm.salesforce.SalesforceModule;
@@ -57,6 +58,8 @@ public class Main {
                 b.bind(GetRepositoriesHandler.class);
                 b.bind(PostRepositoryHandler.class);
                 b.bind(DeleteRepositoryHandler.class);
+                b.bind(GetRepositoryBranchesHandler.class);
+                b.bind(BranchesListRenderer.class);
                 b.bind(ErrorHandler.class);
             }))
 
@@ -82,10 +85,14 @@ public class Main {
                                 "loginForm.html"
                         ))
                     )
-                    .prefix("repositories", repoChain -> {
-                        repoChain.get(GetRepositoriesHandler.class);
-                        repoChain.post(":uuid", PostRepositoryHandler.class);
-                        repoChain.delete(":uuid", DeleteRepositoryHandler.class);
+                    .prefix("repositories", repositories -> {
+                        repositories.get(GetRepositoriesHandler.class);
+                        repositories.prefix(":uuid", repository ->{
+                            repository.delete(DeleteRepositoryHandler.class);
+                            repository.post(PostRepositoryHandler.class);
+                            repository.get("branches", GetRepositoryBranchesHandler.class);
+                        });
+
                     })
                     .files(f -> f.dir("public"));
             })

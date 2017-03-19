@@ -4,6 +4,7 @@ import bbm.database.repositories.Repository;
 import com.google.inject.Inject;
 import org.mongodb.morphia.Datastore;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -45,6 +46,13 @@ class BranchesImpl implements Branches{
                 .field("repository").equal(repository)
                 .get();
         return branch == null ? Optional.empty() : Optional.of(branch);
+    }
+
+    @Override
+    public List<Branch> getBranches(Repository repository) {
+        return datastore.find(Branch.class)
+            .field("repository").equal(repository)
+            .order("name").asList();
     }
 
     @Override
