@@ -1,6 +1,7 @@
 package bbm.handlers;
 
 import bbm.database.repositories.Repositories;
+import bbm.handlers.renderer.RepositoryList;
 import com.google.inject.Inject;
 import ratpack.exec.Blocking;
 import ratpack.handling.Context;
@@ -21,6 +22,6 @@ public class GetRepositoriesHandler implements Handler{
     @Override
     public void handle(Context ctx) throws Exception {
         Blocking.get(() -> repositories.getRepositories())
-        .then(allRepositories -> ctx.render(allRepositories));
+        .then(allRepositories -> ctx.render((RepositoryList) () -> allRepositories));
     }
 }
