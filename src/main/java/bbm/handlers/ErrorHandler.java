@@ -27,11 +27,15 @@ public class ErrorHandler implements ratpack.error.internal.ErrorHandler {
     public void error(Context context, Throwable throwable) throws Exception {
         JsonObject object = new JsonObject();
         object.addProperty("success", false);
-        object.addProperty("message", throwable.getMessage());
+        object.addProperty("exceptionMessage", throwable.getMessage());
         Response resp = context.getResponse();
         resp.status(500);
         logger.info("Retrieved error");
+        logger.info(throwable.getClass().toString());
         logger.info(throwable.getMessage());
+        for(StackTraceElement element : throwable.getStackTrace())
+            logger.info(element.toString());
+        logger.info("Cause: " + throwable.getCause().getClass().toString());
         resp.send(object.toString());
     }
 }

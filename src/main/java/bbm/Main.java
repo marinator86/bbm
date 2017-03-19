@@ -13,7 +13,7 @@ import bbm.handlers.renderer.BranchesListRenderer;
 import bbm.handlers.renderer.RepositoryListRenderer;
 import bbm.handlers.renderer.RepositoryRenderer;
 import bbm.salesforce.SalesforceModule;
-import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.http.client.direct.DirectBasicAuthClient;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,6 @@ import ratpack.guice.Guice;
 import ratpack.session.SessionModule;
 
 import static ratpack.groovy.Groovy.groovyTemplate;
-import static java.util.Collections.singletonMap;
 
 public class Main {
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
@@ -64,27 +63,19 @@ public class Main {
             }))
 
             .handlers(chain -> {
-                final FormClient formClient = new FormClient("/loginForm.html", new SimpleTestUsernamePasswordAuthenticator());
+                final DirectBasicAuthClient directBasicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
                 chain
-                    .all(RatpackPac4j.authenticator("callback", formClient))
+                    .all(RatpackPac4j.authenticator(directBasicAuthClient))
+                    .all(RatpackPac4j.requireAuth(DirectBasicAuthClient.class))
 
                     .get(ctx -> ctx.render(groovyTemplate("index.html")))
                     .get("instruct/:repositoryUID/:branchName/:commit?", InstructionActionHandler.class)
-                    .prefix("admin", protectedchain -> {
-                        protectedchain
-                            .all(RatpackPac4j.requireAuth(FormClient.class))
-                            .path("index.html", ctx -> ctx.render("protected admin"))
-                            .path("sync", OrgActionHandler.class);
+                    .prefix("admin", admin -> {
+                        admin.path("sync", OrgActionHandler.class);
                     })
                     .prefix("hooks", hookChain -> {
                         hookChain.post("bitbucket", BitbucketWebhookHandler.class);
                     })
-                    .path("loginForm.html", ctx ->
-                        ctx.render(groovyTemplate(
-                                singletonMap("callbackUrl", formClient.getCallbackUrl()),
-                                "loginForm.html"
-                        ))
-                    )
                     .prefix("repositories", repositories -> {
                         repositories.get(GetRepositoriesHandler.class);
                         repositories.prefix(":uuid", repository ->{
