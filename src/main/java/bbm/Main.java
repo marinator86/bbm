@@ -1,6 +1,7 @@
 package bbm;
 
 import bbm.actions.buildtrigger.BuildTriggerModule;
+import bbm.auth.AuthModule;
 import bbm.database.orgs.OrgModule;
 import bbm.database.repositories.RepositoryModule;
 import bbm.handlers.*;
@@ -14,6 +15,8 @@ import bbm.handlers.renderer.RepositoryListRenderer;
 import bbm.handlers.renderer.RepositoryRenderer;
 import bbm.salesforce.SalesforceModule;
 import org.pac4j.http.client.direct.DirectBasicAuthClient;
+import org.pac4j.http.credentials.authenticator.Authenticator;
+import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import org.pac4j.http.credentials.authenticator.test.SimpleTestUsernamePasswordAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +50,7 @@ public class Main {
                 b.module(BranchModule.class);
                 b.module(ActionModule.class);
                 b.module(SalesforceModule.class);
+                b.module(AuthModule.class);
                 b.bind(BitbucketWebhookHandler.class);
                 b.bind(OrgActionHandler.class);
                 b.bind(ActionRenderer.class);
@@ -63,7 +67,7 @@ public class Main {
             }))
 
             .handlers(chain -> {
-                final DirectBasicAuthClient directBasicAuthClient = new DirectBasicAuthClient(new SimpleTestUsernamePasswordAuthenticator());
+                final DirectBasicAuthClient directBasicAuthClient = new DirectBasicAuthClient(chain.getRegistry().get(UsernamePasswordAuthenticator.class));
                 chain
                     .all(RatpackPac4j.authenticator(directBasicAuthClient))
                     .all(RatpackPac4j.requireAuth(DirectBasicAuthClient.class))
