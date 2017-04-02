@@ -70,15 +70,15 @@ public class Main {
                 final DirectBasicAuthClient directBasicAuthClient = new DirectBasicAuthClient(chain.getRegistry().get(UsernamePasswordAuthenticator.class));
                 chain
                     .all(RatpackPac4j.authenticator(directBasicAuthClient))
-                    .all(RatpackPac4j.requireAuth(DirectBasicAuthClient.class))
-
-                    .get(ctx -> ctx.render(groovyTemplate("index.html")))
-                    .get("instruct/:repositoryUID/:branchName/:commit?", InstructionActionHandler.class)
-                    .prefix("admin", admin -> {
-                        admin.path("sync", OrgActionHandler.class);
-                    })
                     .prefix("hooks", hookChain -> {
                         hookChain.post("bitbucket", BitbucketWebhookHandler.class);
+                    })
+                    .get("instruct/:repositoryUID/:branchName/:commit?", InstructionActionHandler.class)
+                        
+                    .all(RatpackPac4j.requireAuth(DirectBasicAuthClient.class))
+                    .get(ctx -> ctx.render(groovyTemplate("index.html")))
+                    .prefix("admin", admin -> {
+                        admin.path("sync", OrgActionHandler.class);
                     })
                     .prefix("repositories", repositories -> {
                         repositories.get(GetRepositoriesHandler.class);
