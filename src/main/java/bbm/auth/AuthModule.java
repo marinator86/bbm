@@ -2,6 +2,7 @@ package bbm.auth;
 
 import com.google.inject.AbstractModule;
 import org.pac4j.http.credentials.authenticator.Authenticator;
+import org.pac4j.http.credentials.authenticator.UsernamePasswordAuthenticator;
 import ratpack.pac4j.RatpackPac4j;
 
 /**
@@ -10,7 +11,7 @@ import ratpack.pac4j.RatpackPac4j;
 public class AuthModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(Authenticator.class).to(MongoAuthenticator.class);
-        bind(RatpackPac4j.ClientsProvider.class).to(ClientsProviderImpl.class);
+        bind(UsernamePasswordAuthenticator.class).to(EnvVarAuthenticator.class);
+        bind(EnvironmentVarProvider.class).to(StandardEnvVarProvider.class);
     }
 }
