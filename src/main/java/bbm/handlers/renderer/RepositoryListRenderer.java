@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import ratpack.handling.Context;
 import ratpack.render.Renderer;
+import ratpack.render.RendererSupport;
 import ratpack.util.Types;
 
 import java.util.List;
@@ -12,17 +13,12 @@ import java.util.List;
 /**
  * Created by mario on 2/27/17.
  */
-public class RepositoryListRenderer implements Renderer<List<Repository>> {
+public class RepositoryListRenderer extends RendererSupport<RepositoryList>{
 
     @Override
-    public Class<List<Repository>> getType() {
-        return (Class<List<Repository>>) Types.listOf(Repository.class).getRawType();
-    }
-
-    @Override
-    public void render(Context ctx, List<Repository> repositories) throws Exception {
+    public void render(Context ctx, RepositoryList repositoryList) throws Exception {
         JsonArray results = new JsonArray();
-        for(Repository repository : repositories){
+        for(Repository repository : repositoryList.getList()){
             JsonObject repoObject = new JsonObject();
             repoObject.addProperty("name", repository.getRepo_slug());
             repoObject.addProperty("id", repository.getUuid());
